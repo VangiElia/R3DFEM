@@ -1,0 +1,35 @@
+Package: R3DFEM
+Title: R wrapper for the 3D-CMCC-FEM model
+Version: 0.0.0.9000
+Authors@R: c(
+    person(given= "Elia",family= "Vangi",email = "elia.vangi@isafom.cnr.it", role = c("aut", "cre"),
+           comment = c(ORCID = "https://orcid.org/0000-0002-9772-2258")),
+    person(given= "Alessio",family= "Collalti",email = "alessio.collalti@cnr.it", role = c("com"),
+           comment = c(ORCID = "https://orcid.org/0000-0002-4980-8487")),
+    person(given= "Daniela", family="Dalmonech", email ="daniela.dalmonech@cnr.it", role = c("com"),
+           comment = c(ORCID = "https://orcid.org/0000-0002-1932-5011")))
+Description: This package is an R wrapper of the 3D-CMCC-FEM (https://www.forest-modelling-lab.com/the-3d-cmcc-model)
+    (https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM). fully bio-geochemical (BGC version) forest model that simulates
+    storage and fluxes of Carbon, Water, and Nitrogen including the dynamics occurring in forest ecosystems.
+    The model is able to reproduce dynamics occurring in homogeneous and heterogeneous forests with different plant species,
+    for different ages, diameters and height classes competing with each other for resources.
+    Ther are also functions to facilitate the input creation according to the model specifications.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
+Depends: 
+    R (>= 2.10)
+LazyData: true
+Imports: 
+    dplyr,
+    exactextractr,
+    foreach,
+    magrittr,
+    sf,
+    terra,
+    withr,
+    zoo
+Suggests: 
+    magick,
+    rLiDAR,
