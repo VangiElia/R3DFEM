@@ -24,9 +24,9 @@ which to plot meteo data. Must be in the form yyyy-mm-dd. Default to the
 time range of the EOBS dataset}
 
 \item{window}{Numeric: dimension of the focal window for compute the rolling
-mean. Expressed in days. Deafult to NULL (rolling mean is not plotted).}
+mean. Expressed in days. Default to NULL (rolling mean is not plotted).}
 
-\item{save_plot}{Logical: Should plots be saved in outdir? Deafult to FALSE.}
+\item{save_plot}{Logical: Should plots be saved in outdir? Default to FALSE.}
 
 \item{outdir}{Character: path to the output directory.}
 }
