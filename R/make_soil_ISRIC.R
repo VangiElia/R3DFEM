@@ -17,9 +17,9 @@
 #' @param return_df Logical: should the climate data be returned by the function
 #'   as a data.frame? Default to FALSE
 #'
-#' @details This function compute the weighted mean percentage of sand, silt and
+#' @details This function computes the weighted mean percentage of sand, silt, and
 #'   clay in the first meter of soil. For more information on soil file needed
-#'   by the model please refer to the \href{
+#'   by the model, please refer to the \href{
 #'   http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 #'    Guide}
 #'
