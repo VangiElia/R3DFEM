@@ -12,7 +12,7 @@
 #'   the columns: \itemize{ \item \emph{X}: x cell position \item \emph{Y}: y
 #'   cell position \item \emph{ELEV}: Elevation of the stand
 #'
-#'   } For more info on the topo input data needed see the official \href{
+#'   } For more info on the topo input data needed, see the official \href{
 #'   http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 #'    Guide}
 #'
