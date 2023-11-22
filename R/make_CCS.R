@@ -1,6 +1,6 @@
-#' Create detrended meteo input file for the current-climate scenario (CCS).
+#' Create a detrended meteo input file for the current-climate scenario (CCS).
 #'
-#' \code{make_CCS} use an historical meteo input file to generate a new,
+#' \code{make_CCS} use a historical meteo input file to generate a new,
 #' detrended meteo input file for the future (called current-climate scenario).
 #'
 #' @param meteo Character or data.frame: Historical meteo data or path to a
@@ -13,12 +13,12 @@
 #'   file. Must have columns "year" and "CO2_ppm"
 #' @param obs_year Numeric vector of length 2: first and last year of historical
 #'   meteo and CO2 data to be used to generate the future detrended weather.
-#'   Must be present in both meteo and co2 data.frame
-#' @param end_year Numeric: Last year of simulated meteo and co2 data. Default
+#'   Must be present in both meteo and CO2 data.frame
+#' @param end_year Numeric: Last year of simulated meteo and CO2 data. Default
 #'   to 2099
 #' @param outdir Character: path to the output directory.
 #'
-#' @details The input meteo data.frame must have the colums:
+#' @details The input meteo data.frame must have the following columns:
 #'   \itemize{
 #'   \item \emph{Year}: Reference year for the meteo data
 #'   \item \emph{Month}: number of month in the year
