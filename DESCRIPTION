@@ -22,6 +22,7 @@ Depends:
     R (>= 2.10)
 LazyData: true
 Imports: 
+    data.table,
     dplyr,
     exactextractr,
     foreach,
