@@ -6,7 +6,7 @@
 #' system.
 #'
 #' @param soil_file_path Character vector: vector of paths to soil.txt input files.
-#' @param save_plot Logical: Should plots be saved in outdir? Deafult to FALSE.
+#' @param save_plot Logical: Should plots be saved in outdir? Default to FALSE.
 #' @param outdir Character: path to the output directory.
 #' @inheritParams plotrix::triax.plot
 #'
