@@ -22,17 +22,17 @@
 #' @param return_df Logical: should the climate data be returned by the function
 #'   as a data.frame? Default to FALSE
 #'
-#' @details This function use the version 26.0 of the E-OBS climate data to
-#'   generate the input file for the 3D-CMCC-FEM model. If parallel=TRUE, user
-#'   ca register his own backhand, otherwise the function will register a
+#' @details This function uses version 26.0 of the E-OBS climate data to
+#'   Generate the input file for the 3D-CMCC-FEM model. If parallel=TRUE, user
+#'   can register his own backhand. Otherwise, the function will register a
 #'   7-workers implicit cluster based on \code{\link[foreach]{foreach}} and
 #'   \code{\link[doParallel]{registerDoParallel}}. For more information on meteo
-#'   file needed by the model please refer to the \href{
+#'   file needed by the model, please refer to the \href{
 #'   http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 #'    Guide}
 #'
 #' @return Used for its side effects.It save in \code{outdir} a file
-#'   site_meteo.txt The output file have the colums:
+#'   site_meteo.txt The output file has the following columns:
 #'   \itemize{
 #'   \item \emph{Year}: Reference year for the meteo data
 #'   \item \emph{Month}: number of month in the year
