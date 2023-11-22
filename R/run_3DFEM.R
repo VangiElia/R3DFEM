@@ -3,9 +3,9 @@
 #' \code{run_3DCMCCFEM} is the wrapper for the 3D-CMCC-FEM model developed by the
 #' Italian National Research Council (CNR). Originally written in C, the current
 #' version implemented in this package is the 5.6 ISIMIP. For all details on
-#' the model please refer to the
+#' the model, please refer to the
 #' \href{https://www.forest-modelling-lab.com/the-3d-cmcc-model}{official web
-#' page}. For the development version and original code please refer to the
+#' page}. For the development version and original code, please refer to the
 #' \href{https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM}{GitHub repository}
 #'
 #'
@@ -48,10 +48,10 @@
 #' @param cell Numeric: Size of the cell; Default to 100 (1 ha)
 #' @param pruning Character: Do pruning be performed? options: c("on","off");
 #'   Default to "off
-#' @param irrigation Character: Do irrigation be performed? options:
+#' @param irrigation Character: Does irrigation be performed? Options:
 #'   c("on","off"); Default to "off
-#' @param inputdir Character: Path to input files directory
-#' @param outputdir Character: Path to output files directory
+#' @param inputdir Character: Path to the input files directory
+#' @param outputdir Character: Path to the output files directory
 #'
 #' @details The function need at least 6 input .txt files, that must be in the same
 #'   directory and should be named according to the name of the site or the
