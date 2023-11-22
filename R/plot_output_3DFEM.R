@@ -5,15 +5,15 @@
 #'
 #' @param output_3DFEM Character: path to the model output file.
 #' @param x Character vector of length 1: variable name to be plotted in the
-#'   x-axis. If not provided will be set to the variable "YEAR"
+#'   x-axis. If not provided, it will be set to the variable "YEAR"
 #' @param y Character vector: variable name to be plotted in the y-axis. Could
-#'   be of length >1 if x is NULL. In this case variables will be plotted on
-#'   different facets
+#'   be of length >1 if x is NULL. In this case, variables will be plotted on
+#'   Different facets
 #' @param site_name character vector of length 1: site name to be plotted as
 #'   title. Optional
 #' @param year_range numeric vector of length 2: starting and ending year from
 #'   which to plot the data. It will be sorted in ascending order
-#' @param window Numeric: dimension of the focal window for compute the rolling
+#' @param window Numeric: the dimension of the focal window for computing the rolling
 #'   mean. Expressed in years Default to NULL (rolling mean is not plotted).
 #' @param save_plot Logical: Should plots be saved in outdir? Default to FALSE.
 #' @param outdir Character: path to the output directory.
