@@ -46,7 +46,7 @@
 
 # arg checks --------------------------------------------------------------
     stopifnot("output_3DFEM must be a length 1 character vector"=check_char(output_3DFEM),
-              "var must be a character vector containing column names of the 3DFEM output"=!is.null(var)&&is.character(var))
+              "var must be a character vector containing column names of the 3DFEM output"=!is.null(y)&&is.character(y))
     #read data
     df <- data.table::fread(output_3DFEM,sep=",",header=T,fill=T)
     df <- df[complete.cases(df),]
