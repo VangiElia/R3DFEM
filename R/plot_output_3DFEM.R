@@ -46,7 +46,7 @@
 
 # arg checks --------------------------------------------------------------
     stopifnot("output_3DFEM must be a length 1 character vector"=check_char(output_3DFEM),
-              "var must be a character vector containing column names of the 3DFEM output"=!is.null(y)&&is.character(y))
+              "y must be a character vector containing column names of the 3DFEM output"=!is.null(y)&&is.character(y))
     #read data
     df <- data.table::fread(output_3DFEM,sep=",",header=T,fill=T)
     df <- df[complete.cases(df),]
@@ -58,7 +58,7 @@
       y <- match.arg(y,possible.args,several.ok = T)
       x.axis <- "YEAR"
       cols <-c(x.axis,y)
-      df <- df[,..cols]
+      df <- df[,cols,]
       df <- data.table::melt(df,id.vars="YEAR")
     }
     if(!is.null(y)&!is.null(x)){
@@ -67,7 +67,7 @@
       y <- match.arg(y,possible.args,several.ok = F)
       x <- match.arg(x,possible.args,several.ok = F)
       cols <- unique(c("YEAR",x,y))
-      df <- df[,..cols]
+      df <- df[,cols,]
     }
 
     if(!is.null(year_range)){
