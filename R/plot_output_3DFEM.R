@@ -101,7 +101,7 @@
 
 
     if(!is.null(y)&is.null(x)){
-      site_plot <- site_plot+ggplot2::geom_point(aes(x=YEAR,y=value,col=variable),size=2)
+      site_plot <- site_plot+ggplot2::geom_point(ggplot2::aes(x=YEAR,y=value,col=variable),size=2)
 
       if(length(y)==1){
       site_plot <- site_plot+ggplot2::labs(y=y)
@@ -111,10 +111,10 @@
       if(!is.null(window)){
         stopifnot("if not NULL window must be a numeric vector of length 1"=check_num(window))
         site_plot <- site_plot+
-          ggplot2::geom_line(aes(col=variable,x=YEAR,y=ave(.data[["value"]], variable, FUN = function(Z) zoo::rollmean(Z, window, fill=NA, align='center'))),size=1.0)
+          ggplot2::geom_line(ggplot2::aes(col=variable,x=YEAR,y=ave(.data[["value"]], variable, FUN = function(Z) zoo::rollmean(Z, window, fill=NA, align='center'))),size=1.0)
       }
     }else{
-      site_plot <-site_plot+ggplot2::geom_point(aes(x=.data[[x]],y=.data[[y]]),size=2)
+      site_plot <-site_plot+ggplot2::geom_point(ggplot2::aes(x=.data[[x]],y=.data[[y]]),size=2)
     }
 
     if(!is.null(site_name)){
