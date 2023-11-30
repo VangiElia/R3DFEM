@@ -61,10 +61,10 @@ make_CCS <- function(meteo=NULL,co2=NULL,obs_year=NULL,end_year=2099,outdir=NULL
 
   check_dir(outdir)
   stopifnot(
-    "obs_year must be a numeric vector of length 2" =  check_len_num(obs_year,2),
+    "obs_year must be a numeric vector of length 2" =  check_len_num(obs_year,len=2),
     "end_year must be a number"=check_num(end_year),
     "meteo is NULL"=!is.null(meteo),
-    "co2 is NULL"=!is.null(co2),
+    "co2 is NULL"=!is.null(co2)
   )
 
   if(class(meteo)=="character"){
