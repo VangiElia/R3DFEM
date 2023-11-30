@@ -172,4 +172,3 @@ make_CCS <-
     message("files saved!")
 }
 
-make_CCS(meteo="E:/meteo.txt",co2="E:/co2.txt",obs_year=c(2010,2022),end_year = 2099,outdir="E:/xxx")
