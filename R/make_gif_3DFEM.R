@@ -226,3 +226,4 @@ make_gif_3DFEM <- function(path,years=NULL,distribution=c("regular","pseudorando
 #path <- "E:\\3DCMCCFEM_output\\nuove_simulazioni_CCS\\output\\BilyKriz\\rcp8p5\\120\\ESM5\\output\\BilyKriz_co2_on_man_off_1997-2099_2023-09-28_14-10-38\\annual\\BilyKriz_co2_on_man_off_1997-2099.txt"
 #outdir <- "E:/3DCMCCFEM_output/gif/"
 #make_gif_3DFEM(path,outdir)
+#to be checked
