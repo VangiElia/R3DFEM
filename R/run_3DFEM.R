@@ -3,9 +3,9 @@
 #' \code{run_3DCMCCFEM} is the wrapper for the 3D-CMCC-FEM model developed by the
 #' Italian National Research Council (CNR). Originally written in C, the current
 #' version implemented in this package is the 5.6 ISIMIP. For all details on
-#' the model, please refer to the
+#' the model please refer to the
 #' \href{https://www.forest-modelling-lab.com/the-3d-cmcc-model}{official web
-#' page}. For the development version and original code, please refer to the
+#' page}. For the development version and original code please refer to the
 #' \href{https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM}{GitHub repository}
 #'
 #'
@@ -48,10 +48,14 @@
 #' @param cell Numeric: Size of the cell; Default to 100 (1 ha)
 #' @param pruning Character: Do pruning be performed? options: c("on","off");
 #'   Default to "off
-#' @param irrigation Character: Does irrigation be performed? Options:
+#' @param irrigation Character: Do irrigation be performed? options:
 #'   c("on","off"); Default to "off
-#' @param inputdir Character: Path to the input files directory
-#' @param outputdir Character: Path to the output files directory
+#' @param inputdir Character: Path to input files directory
+#' @param outputdir Character: Path to output files directory
+#' @param check_meteo Logical: Should the validity of the meteo file be checked
+#'   with the function check_meteo()? Default to FALSE
+#' @param move_and_rename Logical: Should the outputs be moved and renamed to be
+#'   easily identified? Default to TRUE
 #'
 #' @details The function need at least 6 input .txt files, that must be in the same
 #'   directory and should be named according to the name of the site or the
@@ -102,7 +106,9 @@ run_3DCMCCFEM <- function(site = NULL,
                           pruning = "off",
                           irrigation = "off",
                           inputdir = NULL,
-                          outputdir = NULL
+                          outputdir = NULL,
+                          check_meteo=FALSE,
+                          move_and_rename=TRUE
 ) {
 
   # Find system month name
@@ -235,6 +241,10 @@ run_3DCMCCFEM <- function(site = NULL,
   }
   rm(mt, co, y)
 
+  if(check_meteo){
+    R3DFEM::check_meteo_3DFEM(file_meteo=input_files[grep("meteo.txt",input_files)],correct=FALSE)
+  }
+
   # man = on checks
   if(man == "on") {
     sp <- read.table(paste0(inputdir, "/", species, ".txt"), sep = " ", header = FALSE, stringsAsFactors = FALSE,fill=T,comment.char = "/")
@@ -288,6 +298,7 @@ run_3DCMCCFEM <- function(site = NULL,
     sp <- sp[rowSums(sp=="")!=ncol(sp), ]
     sp[,2] <- as.numeric(sp[,2])
     colnames(sp)[2] <- "value"
+
     if((man == "var" && pres_dens == "off") || (man == "var" && pres_dens == "on" && after_pres == "on")) {
 
     mn <- read.delim(paste0(inputdir, "/", site, "_management.txt"), sep = ",", header = FALSE, stringsAsFactors = FALSE)
@@ -524,63 +535,66 @@ run_3DCMCCFEM <- function(site = NULL,
 
 # ouput file naming --------------------------------------------------------
 
+  if(move_and_rename){
+
+  #rename debug file
+  debug <- list.files(outputdir,recursive = F,full.names = T)
+  tmpout <- debug[grepl("output_5.6",basename(debug),fixed=T)]
+  debug <- debug[grep(paste0("^",site),basename(debug))]
+  newdebug <- file.path(outputdir,paste0(output,"_debug.txt"))
+  file.rename(from=debug,
+              to=newdebug)
+  infile <- list.files(file.path(tmpout,"input_data"),full.names = T)
+  newindir <- file.path(outputdir,"input_data")
+  if(!dir.exists(newindir)){
+    dir.create(newindir,showWarnings = F)
+    to <- file.path(newindir,basename(infile))
+    file.rename(from=infile,
+                to=to)
+  }
+  outfold <- list.dirs(outputdir,recursive = T)
+
   if(output == "annual") {
-    outfold <- paste0(outputdir, "/output_5.5-ISIMIP_", substring(Sys.Date(), 1, 4), "_", sysmonth, "_", substring(Sys.Date(), 9, 10), "/annual/")
-    outfile <- list.files(outfold, pattern = ".txt.txt")
+     outfold <- outfold[grepl("annual",basename(outfold),fixed=T)]
+     outfile <- list.files(outfold,full.names = T)
     if(man == "off" || man == "on") {
-      file.rename(from = paste0(outfold, outfile),
-                  to = paste0(outfold, site, "_co2_", co2, "_man_", man, "_", year_start, "-", year_end, ".txt"))
+      file.rename(from = outfile,
+                  to = file.path(outputdir, paste0("annual_",site, "_co2_", co2, "_man_", man, "_", year_start, "-", year_end, ".txt")))
     }
-    # if(man == "var" && pres_dens == "off") {
     if(man == "var") {
-      file.rename(from = paste0(outfold, outfile),
-                  to = paste0(outfold, site, "_co2_", co2, "_man_", man, "_pres_dens_", pres_dens, "_reg_", reg, "_", year_start, "-", year_end, ".txt"))
+      file.rename(from = outfile,
+                  to = file.path(outputdir, paste0("annual_",site, "_co2_", co2, "_man_", man, "_pres_dens_", pres_dens, "_reg_", reg, "_", year_start, "-", year_end, ".txt")))
     }
-    # if(man == "var" && pres_dens == "on") {
-    #   file.rename(from = paste0(outfold, outfile),
-    #               to = paste0(outfold, site, "_co2_", co2, "_man_", man, "_pres_dens_", pres_dens, "_after_pres_", after_pres, "_reg_", reg, "_", year_start, "-", year_end, ".txt"))
-    # }
   }
   if(output == "monthly") {
-    outfold <- paste0(outputdir, "/output_5.5-ISIMIP_", substring(Sys.Date(), 1, 4), "_", sysmonth, "_", substring(Sys.Date(), 9, 10), "/monthly/")
-    outfile <- list.files(outfold, pattern = ".txt.txt")
+       outfold <- outfold[grepl("monthly",basename(outfold),fixed=T)]
+       outfile <- list.files(outfold,full.names = T)
     if(man == "off" || man == "on") {
-      file.rename(from = paste0(outfold, outfile),
-                  to = paste0(outfold, site, "_co2_", co2, "_man_", man, "_", year_start, "-", year_end, ".txt"))
+      file.rename(from = outfile,
+                  to = file.path(outputdir, paste0("monthly_",site, "_co2_", co2, "_man_", man, "_", year_start, "-", year_end, ".txt")))
     }
-    # if(man == "var" && pres_dens == "off") {
     if(man == "var") {
-      file.rename(from = paste0(outfold, outfile),
-                  to = paste0(outfold, site, "_co2_", co2, "_man_", man, "_pres_dens_", pres_dens, "_reg_", reg, "_", year_start, "-", year_end, ".txt"))
+      file.rename(from = outfile,
+                  to = file.path(outputdir, paste0("monthly_",site, "_co2_", co2, "_man_", man, "_pres_dens_", pres_dens, "_reg_", reg, "_", year_start, "-", year_end, ".txt")))
     }
   }
   if(output == "daily") {
-    outfold <- paste0(outputdir, "/output_5.5-ISIMIP_", substring(Sys.Date(), 1, 4), "_", sysmonth, "_", substring(Sys.Date(), 9, 10), "/daily/")
-    outfile <- list.files(outfold, pattern = ".txt.txt")
+    outfold <- outfold[grepl("daily",basename(outfold),fixed=T)]
+    outfile <- list.files(outfold,full.names = T)
     if(man == "off" || man == "on") {
-      file.rename(from = paste0(outfold, outfile),
-                  to = paste0(outfold, site, "_co2_", co2, "_man_", man, "_", year_start, "-", year_end, ".txt"))
+      file.rename(from =outfile,
+                  to = file.path(outputdir, paste0("daily_",site, "_co2_", co2, "_man_", man, "_", year_start, "-", year_end, ".txt")))
     }
-    # if(man == "var" && pres_dens == "off") {
     if(man == "var") {
-      file.rename(from = paste0(outfold, outfile),
-                  to = paste0(outfold, site, "_co2_", co2, "_man_", man, "_pres_dens_", pres_dens, "_reg_", reg, "_", year_start, "-", year_end, ".txt"))
+      file.rename(from =outfile,
+                  to = file.path(outputdir, paste0("daily_",site, "_co2_", co2, "_man_", man, "_pres_dens_", pres_dens, "_reg_", reg, "_", year_start, "-", year_end, ".txt")))
     }
   }
 
-  cat(paste0("\nSimulation complete!\n"))
+  unlink(tmpout,recursive = T,force=T)
 
-  # Rename output directory
-  outfold <- paste0(outputdir, "/output_5.5-ISIMIP_", substring(Sys.Date(), 1, 4), "_", sysmonth, "_", substring(Sys.Date(), 9, 10))
-  if(man == "off" || man == "on") {
-    file.rename(from = outfold,
-                to = paste0(outputdir, "/",  site, "_co2_", co2, "_man_", man, "_", year_start, "-", year_end, "_", Sys.Date(), "_", gsub(":", "-",substring(Sys.time(), 12, 19))))
   }
-  # if(man == "var" && pres_dens == "off") {
-  if(man == "var") {
-    file.rename(from = outfold,
-                to = paste0(outputdir, "/", site, "_co2_", co2, "_man_", man, "_pres_dens_", pres_dens, "_reg_", reg, "_", year_start, "-", year_end, "_", Sys.Date(), "_", gsub(":", "-",substring(Sys.time(), 12, 19))))
-  }
+  cat(paste0("\nSimulation complete!\n"))
   end.time <- Sys.time()
   cat(paste0("\nRunning time: ", round(end.time - start.time, 1), " s\n"))
 }
