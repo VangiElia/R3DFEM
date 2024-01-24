@@ -106,7 +106,7 @@
       if(length(y)==1){
       site_plot <- site_plot+ggplot2::labs(y=y)
       }else{
-        site_plot <- site_plot+ggplot2::facet_wrap(~variable)
+        site_plot <- site_plot+ggplot2::facet_wrap(~variable,scales = "free")
       }
       if(!is.null(window)){
         stopifnot("if not NULL window must be a numeric vector of length 1"=check_num(window))
