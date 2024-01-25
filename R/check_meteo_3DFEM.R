@@ -127,7 +127,7 @@ if(sum(!complete.cases(meteo))!=0)warning("row(s) ",paste0(which(!complete.cases
      }
  }
 
- pr <- meteo$Precip<0.05&meteo$Precip!=0
+ pr <- meteo$Precip<0.0001&meteo$Precip!=0
 
  if(any(pr)){
 
