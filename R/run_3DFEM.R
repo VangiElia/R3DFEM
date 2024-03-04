@@ -124,9 +124,9 @@ run_3DCMCCFEM <- function(site = NULL,
   # translate argument ------------------------------------------------------
 
   psn <- ifelse(psn == "BGC",0,1)
-  daily <- ifelse(output == "daily","on","off")
-  monthly <- ifelse(output == "monthly","on","off")
-  annual <- ifelse(output == "annual","on","off")
+  daily <- ifelse(output %in% "daily","on","off")
+  monthly <- ifelse(output %in% "monthly","on","off")
+  annual <- ifelse(output %in% "annual","on","off")
 
   # checks ------------------------------------------------------------------
 
