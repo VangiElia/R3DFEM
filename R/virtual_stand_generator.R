@@ -190,7 +190,7 @@ virtual_stand_generator <-
       0,
       0,
       virtual$AGE,
-      virtual$SPECIES,
+      virtual$SPECIE,
       "T",
       virtual$LIVETREE,
       0,
