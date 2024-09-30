@@ -1,0 +1,2 @@
+Year,x,y,Age,Species,Management,N,Stool,AvDBH,Height,Wf,Wrc,Wrf,Ws,Wbb,Wres,Lai
+1997,0,0,14,Pinussylvestris,T,1999,0,2.38543,4.28284,0,0,0,0,0,0,0
