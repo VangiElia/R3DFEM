@@ -1,0 +1,2 @@
+Year,x,y,Age,Species,Management,N,Stool,AvDBH,Height,Wf,Wrc,Wrf,Ws,Wbb,Wres,Lai
+1997,0,0,56,Fagussylvatica,T,1233,0,14.9547,15.2093,0,0,0,0,0,0,0
