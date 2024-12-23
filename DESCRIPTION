@@ -30,7 +30,8 @@ Imports:
     sf,
     terra,
     withr,
-    zoo
+    zoo,
+    stringr
 Suggests: 
     magick,
     rLiDAR,
