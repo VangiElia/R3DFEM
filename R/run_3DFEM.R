@@ -348,7 +348,7 @@ run_3DCMCCFEM <- function(site = NULL,
       warning(paste0("'man' = var and 'pres_dens' = on: \n* Single year in ", site, "_stand.txt."))
     }
     # Check management file when present
-    if(pres_dens == "off" || (pres_dens == "on" && after_pres == "on") || (man == "var" && pres_dens == "on" && after_pres == "off" && reg == "on")) {
+    if(pres_dens == "off" || (pres_dens == "on" && after_pres == "on") || (man == "var" && pres_dens == "on" && after_pres == "off" && reg == "off")) {
       # If harvesting is defined in management file and is within simulation years, replanted trees parameters must be defined
       if(any(colnames(mn) == "Harvesting") && any(mn$Harvesting %in% year_start:year_end) && (rep_trees==-9999  || rep_age==-9999 || rep_dbh==-9999 || rep_lai==-9999 || rep_height==-9999|| rep_species==-9999)) {
         stop(paste0("\n'man' = var and harvesting year ('Harvesting') is reached: \n* Replanting arguments are missing, with no default."))
