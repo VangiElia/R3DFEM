@@ -44,5 +44,5 @@ The main function of the package is run_3DCMCCFEM, which is a wrapper of the C c
 
 ## Pubblication
 
-All the pieces of information in this README are taken from the pre-print paper [R3DFEM: an R package for running the 3D-CMCC-FEM model](https://doi.org/10.1101/2024.10.07.616968). We hope to have a published version ASAP.
+All the pieces of information in this README are taken from the paper [R3DFEM: an R package for running the 3D-CMCC-FEM model](https://link.springer.com/article/10.1007/s12145-025-01956-0).
 Have fun and have a nice modeling day!!!
