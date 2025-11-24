@@ -58,7 +58,6 @@
 #'   with the function check_meteo()? Default to FALSE
 #' @param move_and_rename Logical: Should the outputs be moved and renamed to be
 #'   easily identified? Default to TRUE
-#'
 #' @details The function need at least 6 input .txt files, that must be in the same
 #'   directory and should be named according to the name of the site or the
 #'   species: "site_stand.txt", "site_soil.txt", "site_topo.txt",
@@ -162,8 +161,9 @@ run_3DCMCCFEM <- function(site = NULL,
     if (check_input){
   # If man = on and year_start_man is missing, set it to year_start
   if(man == "on" && year_start_man==-9999) {
-    year_start_man <- year_start
-    warning("'man' = on: \n- Argument 'year_start_man' is missing. \n- 'year_start_man' = 'year_start'.")
+    stop("'man' = on: \n- Argument 'year_start_man' is missing. \n- 'year_start_man' = 'year_start'.")
+    #year_start_man <- year_start
+    #warning("'man' = on: \n- Argument 'year_start_man' is missing. \n- 'year_start_man' = 'year_start'.")
   }
   #regeneration on just if man=var
   # If reg = on and man = on or off, throw error
@@ -244,6 +244,7 @@ run_3DCMCCFEM <- function(site = NULL,
   mt <- read.table(input_files[grep("meteo.txt",input_files)], sep = "\t", header = T)
   for(s in c("\t"," ",",",";",".")){
     co <- read.table(input_files[grep("co2.txt",input_files)], sep = s, header = T)
+    co[,apply(co,2,function(x)all(is.na(x)))] <- NULL
     if(ncol(co)==2)break
   }
   y <- seq(year_start, year_end)
@@ -347,8 +348,13 @@ run_3DCMCCFEM <- function(site = NULL,
     if(pres_dens == "on" && nrow(st) == 1) {
       warning(paste0("'man' = var and 'pres_dens' = on: \n* Single year in ", site, "_stand.txt."))
     }
+
     # Check management file when present
-    if(pres_dens == "off" && reg=="off"|| (pres_dens == "on" && after_pres == "on") || (man == "var" && pres_dens == "on" && after_pres == "off" && reg == "on")) {
+    if ((pres_dens == "off" && reg == "off") ||
+        (pres_dens == "on" &&
+         after_pres == "on") ||
+        (man == "var" &&
+         pres_dens == "on" && after_pres == "off" && reg == "on")) {
       # If harvesting is defined in management file and is within simulation years, replanted trees parameters must be defined
       if(any(colnames(mn) == "Harvesting") && any(mn$Harvesting %in% year_start:year_end) && (rep_trees==-9999  || rep_age==-9999 || rep_dbh==-9999 || rep_lai==-9999 || rep_height==-9999|| rep_species==-9999)) {
         stop(paste0("\n'man' = var and harvesting year ('Harvesting') is reached: \n* Replanting arguments are missing, with no default."))
@@ -377,9 +383,11 @@ run_3DCMCCFEM <- function(site = NULL,
         warning("'man' = var: \n* Management actions are outside simulated time frame.")
       }
     }
+
     if(pres_dens == "on" && after_pres == "off" && reg == "off" && nrow(st) == 1) {
       warning("'man' = var and 'pres_dens' = on: \n* Single density in stand file.")
     }
+
     if(reg == "on") {
       # If regeneration is not defined in management file, throw error
       if(!any(colnames(mn) == "regeneration")) {
