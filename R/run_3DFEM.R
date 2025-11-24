@@ -305,7 +305,7 @@ run_3DCMCCFEM <- function(site = NULL,
           )
         }
         # If harvest happens within the simulation time frame (accounting for stand age), replanted trees parameters must be defined
-        if (year_start + sp[sp$V1 == "ROTATION", "value"] - st[st$Year == year_start, "Age"] < year_end &&
+        if (year_start + sp[sp$V1 == "ROTATION", "value"] - st[st$Species==species[i]&st$Year == year_start, "Age"] < year_end &&
             (
               rep_trees  == -9999 ||
               rep_age    == -9999 ||
@@ -632,3 +632,4 @@ run_3DCMCCFEM <- function(site = NULL,
   end.time <- Sys.time()
   cat(paste0("\nRunning time: ", round(end.time - start.time, 1), " s\n"))
 }
+
