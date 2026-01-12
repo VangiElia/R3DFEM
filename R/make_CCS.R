@@ -16,9 +16,12 @@
 #'   Must be present in both meteo and co2 data.frame
 #' @param end_year Numeric: Last year of simulated meteo and co2 data. Default
 #'   to 2099
-#' @param outdir Character: path to the output directory.
+#' @param outdir Character: path to the output directory. If does not exist it
+#'   will be created
+#' @param keep_name Logical: if TRUE the name of the detrended file will be the
+#'   same of the the original one, otherwise the prefix "detrended_" will be add
 #'
-#' @details The input meteo data.frame must have the colums:
+#' @details The input meteo data.frame must have the columns:
 #'   \itemize{
 #'   \item \emph{Year}: Reference year for the meteo data
 #'   \item \emph{Month}: number of month in the year
@@ -57,26 +60,32 @@ make_CCS <-
            co2 = NULL,
            obs_year = NULL,
            end_year = 2099,
-           outdir = NULL) {
+           outdir = NULL,
+           keep_name=TRUE) {
 
     # args check --------------------------------------------------------------
 
     check_dir(outdir)
     stopifnot(
       "obs_year must be a numeric vector of length 2" = check_len_num(obs_year,len =2),
-      "end_year must be a number" = check_num(end_year),
-      "meteo is NULL" = !is.null(meteo),
-      "co2 is NULL" = !is.null(co2)
+      "end_year must be a number" = check_num(end_year)
     )
 
-    if (class(meteo) == "character") {
-      meteo <- read.table(meteo, header = T, sep = "\t")
-    } else if (class(meteo) %in% c("data.frame", "data.table", "tbl_df", "tbl")) {
-      meteo <- meteo
-    } else{
-      stop("meteo is of the wrong class")
+    if (!is.null(meteo)) {
+      if (class(meteo) == "character") {
+        if(keep_name){
+          outname <- file.path(outdir,basename(meteo))
+        }else{
+          outname <- file.path(outdir,paste0("detrended_",basename(meteo)))
+        }
+        meteo <- read.table(meteo, header = T, sep = "\t")
+      } else if (class(meteo) %in% c("data.frame", "data.table", "tbl_df", "tbl")) {
+        meteo <- meteo
+        outname <-  file.path(outdir, "detrended_meteo.txt")
+      } else{
+        stop("meteo is of the wrong class")
+      }
     }
-
     if (!is.null(meteo)) {
       range_year <- range(meteo$Year)
       stopifnot(
@@ -87,14 +96,21 @@ make_CCS <-
       )
     }
 
-    if (class(co2) == "character") {
-      co2 <- read.table(co2, header = T)
-    } else if (class(co2) %in% c("data.frame", "data.table", "tbl_df", "tbl")) {
-      co2 <- co2
-    } else{
-      stop("co2 is of the wrong class")
+    if (!is.null(co2)) {
+      if (class(co2) == "character") {
+        if(keep_name){
+          outname_co2 <- file.path(outdir,basename(co2))
+        }else{
+          outname_co2 <- file.path(outdir,paste0("detrended_",basename(co2)))
+        }
+        co2 <- read.table(co2, header = T)
+      } else if (class(co2) %in% c("data.frame", "data.table", "tbl_df", "tbl")) {
+        co2 <- co2
+        outname_co2 <-  file.path(outdir, "detrended_co2.txt")
+      } else{
+        stop("co2 is of the wrong class")
+      }
     }
-
     if (!is.null(co2)) {
       range_year <- range(co2$year)
       stopifnot(
@@ -128,47 +144,51 @@ make_CCS <-
     # internal data loading ---------------------------------------------------
 
     #METEO
-    meteo_or <- meteo
+    if (!is.null(meteo)) {
+      meteo_or <- meteo
 
-    meteo_random <-
-      do.call(rbind, lapply(seq_along(anni_random$anni_or), function(i) {
-        tmp <- meteo_or[meteo_or$Year == anni_random$anni_or[i],]
-        tmp$Year <- anni_random$anni_new[i]
-        return(tmp)
-      }))
+      meteo_random <-
+        do.call(rbind, lapply(seq_along(anni_random$anni_or), function(i) {
+          tmp <- meteo_or[meteo_or$Year == anni_random$anni_or[i], ]
+          tmp$Year <- anni_random$anni_new[i]
+          return(tmp)
+        }))
 
+      meteo_random <- rbind(meteo,meteo_random)
 
-    write.table(
-      meteo_random,
-      file = paste0(file.path(outdir, "meteo_CCS"), ".txt"),
-      quote = F,
-      sep = '\t',
-      row.names = F
-    )
+      write.table(
+        meteo_random,
+        file = outname,
+        quote = F,
+        sep = '\t',
+        row.names = F
+      )
+      message(outname," saved!")
 
+    }
     #CO2
-
-    # importo il file dei valori misurati e prendo gli anni presenti
-    if (is.null(co2)) {
-      co2_or <- R3DFEM:::co2_or
-    } else{
+    if (!is.null(co2)) {
       co2_or <- co2
+      co2_random <-
+        do.call(rbind, lapply(seq_along(anni_random$anni_or), function(i) {
+          tmp <- co2_or[co2_or$year == anni_random$anni_or[i], ]
+          tmp$year <- anni_random$anni_new[i]
+          return(tmp)
+        }))
+
+      co2_random <- rbind(co2,co2_random)
+
+      write.table(
+        co2_random,
+        file = outname_co2,
+        quote = F,
+        sep = '\t',
+        row.names = F
+      )
+      message(outname_co2," saved!")
+
     }
 
-    co2_random <-
-      do.call(rbind, lapply(seq_along(anni_random$anni_or), function(i) {
-        tmp <- co2_or[co2_or$year == anni_random$anni_or[i],]
-        tmp$year <- anni_random$anni_new[i]
-        return(tmp)
-      }))
-
-    write.table(
-      co2_random,
-      file = paste0(file.path(outdir, "co2_CCS"), ".txt"),
-      quote = F,
-      sep = '\t',
-      row.names = F
-    )
-    message("files saved!")
 }
 
+#make_CCS(meteo="E:/meteo.txt",co2="E:/co2.txt",obs_year=c(2010,2022),end_year = 2099,outdir="E:/xxx")
