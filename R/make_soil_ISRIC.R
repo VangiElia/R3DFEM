@@ -113,8 +113,8 @@ make_soil_ISRIC <- function(plot,crs=NULL,buffer=100,id=NULL,site=NULL,outdir=NU
       X = 0,
       Y = 0,
       LANDUSE = "F",
-      LAT = latlon[,1],
-      LON = latlon[,2],
+      LAT = latlon[,2],
+      LON = latlon[,1],
       CLAY_PERC = clay,
       SILT_PERC = silt,
       SAND_PERC = sand,
@@ -158,3 +158,4 @@ make_soil_ISRIC <- function(plot,crs=NULL,buffer=100,id=NULL,site=NULL,outdir=NU
     return(soil)
   }
 }
+
