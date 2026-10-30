@@ -134,7 +134,9 @@ easily identified? Default to TRUE}
 \value{
 Used for its side effects. It saves in \code{outputdir} the .txt
 files with the results of the simulation and returns invisibly their
-paths (\code{NULL} if \code{move_and_rename = FALSE}). The working
+paths, named by output type with the main output first (e.g.
+\code{c(monthly = ..., annual_man = ...)}; \code{NULL} if
+\code{move_and_rename = FALSE}). The working
 directory is not changed. For all details of the output please refer to
 the \href{http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 Guide}

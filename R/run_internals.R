@@ -322,9 +322,13 @@
     file.copy(list.files(file.path(run_dir, "input_data"), full.names = TRUE), newindir, overwrite = TRUE)
 
     # e.g. "annual_5.606_BilyKriz_..." -> "annual_", "annual_man_5.606_..." -> "annual_man_"
-    to <- file.path(outputdir, paste0(sub("\\d.*", "", basename(outfile)), tag, ".txt"))
+    prefix <- sub("\\d.*", "", basename(outfile))
+    to <- file.path(outputdir, paste0(prefix, tag, ".txt"))
     file.copy(outfile, to, overwrite = TRUE)
     unlink(run_dir, recursive = TRUE, force = TRUE)
+    # main output first, other outputs (e.g. annual_man) after; named by type
+    names(to) <- sub("_$", "", prefix)
+    to <- to[order(names(to) != output)]
   }
 
   cat(paste0("\nSimulation complete!\n"))
