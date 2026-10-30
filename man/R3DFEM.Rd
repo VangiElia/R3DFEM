@@ -7,7 +7,7 @@
 \description{
 The R3DFEM package provides functions for creating and check inputs for
 simulations, run the 3D-CMCC-FEM model, plot inputs and outputs and other
-functionalities. See the package readme for an overview of the package
+functionalities. See \code{vignette("R3DFEM")} for an overview of the package
 functionality.
 }
 \note{

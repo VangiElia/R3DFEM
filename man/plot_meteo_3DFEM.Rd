@@ -46,5 +46,5 @@ scale for the x-axis based on the \code{daterange} argument. The
 \code{window} argument should be appropriate to the desired time frame.
 }
 \seealso{
-\code{\link[=run_3DFEM]{make_meteo_EOBS}}
+\code{\link{make_meteo_EOBS}}
 }

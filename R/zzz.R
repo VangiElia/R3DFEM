@@ -4,8 +4,3 @@
            requireNamespace, quietly = TRUE)
   ))
 }
-
-.onUnload <- function (libpath) {
-  library.dynam.unload("R3DFEM", libpath)
-  invisible()
-}

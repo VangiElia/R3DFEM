@@ -35,8 +35,12 @@ run_3DCMCCFEM(
   cell = 100,
   pruning = "off",
   irrigation = "off",
+  tll = 3,
   inputdir = NULL,
-  outputdir = NULL
+  outputdir = NULL,
+  check_input = TRUE,
+  check_meteo = FALSE,
+  move_and_rename = TRUE
 )
 }
 \arguments{
@@ -75,7 +79,8 @@ Default to -9999.}
 \item{rep_height}{Integer: Average height of replanted trees; Default to
 -9999.}
 
-\item{rep_species}{Integer: Species of replanted trees}
+\item{rep_species}{Character: Species of replanted trees (name of the
+parameterization file); Default to -9999.}
 
 \item{reg_trees}{Integer: Number of saplings; Default to -9999.}
 
@@ -105,28 +110,41 @@ maximum at the beginning of simulation (1 = 100\%); Default to 1}
 \item{cell}{Numeric: Size of the cell; Default to 100 (1 ha)}
 
 \item{pruning}{Character: Do pruning be performed? options: c("on","off");
-Default to "off}
+Default to "off"}
 
 \item{irrigation}{Character: Do irrigation be performed? options:
-c("on","off"); Default to "off}
+c("on","off"); Default to "off"}
+
+\item{tll}{Numeric: tree height layer limit, to consider different trees in different layers}
 
 \item{inputdir}{Character: Path to input files directory}
 
-\item{outputdir}{Character: Path to output files directory}
+\item{outputdir}{Character: Path to output files directory. If it is not
+named 'output', a subdirectory 'output' is created.}
 
-\item{#}{Set regeneration parameters}
+\item{check_input}{Logical: Should the consistency of the arguments and of
+the input files be checked (see \code{\link{check_inputs}})? Default to TRUE}
+
+\item{check_meteo}{Logical: Should the validity of the meteo file be checked
+with the function \code{\link{check_meteo_3DFEM}}? Default to FALSE}
+
+\item{move_and_rename}{Logical: Should the outputs be moved and renamed to be
+easily identified? Default to TRUE}
 }
 \value{
-Used for its side effects.It save in \code{outdir} a .txt file with
-the results of the simulations performed. For all details of the output
-please refer to the  \href{
-http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
+Used for its side effects. It saves in \code{outputdir} the .txt
+files with the results of the simulation and returns invisibly their
+paths (\code{NULL} if \code{move_and_rename = FALSE}). The working
+directory is not changed. For all details of the output please refer to
+the \href{http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 Guide}
 }
 \description{
 \code{run_3DCMCCFEM} is the wrapper for the 3D-CMCC-FEM model developed by the
-Italian National Research Council (CNR). Originally written in C, the current
-version implemented in this package is the 5.6 ISIMIP. For all details on
+Italian National Research Council (CNR). Originally written in C, the
+version used by this function is the 5.6 (executable
+\code{3D_CMCC_Forest_Model.exe}, internal version string v.5.606). For the
+5.7 executable use \code{\link{run_3DCMCCFEM_5.7}}. For all details on
 the model please refer to the
 \href{https://www.forest-modelling-lab.com/the-3d-cmcc-model}{official web
 page}. For the development version and original code please refer to the
@@ -139,7 +157,9 @@ species: "site_stand.txt", "site_soil.txt", "site_topo.txt",
 "site_meteo.txt", "site_co2.txt", "species.txt". A "site_management.txt"
 file must be provided if required. The site name and species in the input
 file name must be the same of the argument \code{site} and \code{species}.
+The settings file is written in \code{inputdir}.
 }
 \seealso{
+\code{\link{run_3DCMCCFEM_5.7}}, \code{\link{check_inputs}},
 \code{\link{virtual_stand_generator}}
 }

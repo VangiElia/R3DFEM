@@ -1,6 +1,6 @@
 ![](https://github.com/VangiElia/R3DFEM/blob/main/readme/LOGO_3DCMCCFEM_color.png)
 # R3DFEM: An R package for running the 3D-CMCC-FEM model
- Due to storage capacity, some data cannot be uploaded to Github, causing the functions make_meteo_EOBS and make_soil_ISRIC not to work.
+ Due to storage capacity, some data cannot be uploaded to Github (E-OBS climate data and SoilGrids raster), causing the functions make_meteo_EOBS, make_meteo_EOBS_30.0 and make_soil_ISRIC not to work. All the other functions, including the helpers to create input files from your own data, work out of the box.
  
  The R3DFEM package provides functions for creating and checking inputs for
  simulations, running the 3D-CMCC-FEM model, plotting inputs and outputs, and other
@@ -16,6 +16,27 @@ devtools::install_github("VangiElia/R3DFEM")
 #loading R3DFEM package
 library(R3DFEM)
 ```
+
+A complete example of the workflow (input creation, checks, simulations and plots) is in the vignette:
+
+```{r eval=FALSE}
+devtools::install_github("VangiElia/R3DFEM", build_vignettes = TRUE)
+vignette("R3DFEM")
+```
+
+## Functions
+
+| Task | Functions |
+|---|---|
+| Create input files | `make_stand()`, `make_meteo()`, `make_co2()`, `make_soil()`, `make_topo()`, `make_management()` |
+| Input from European datasets | `make_meteo_EOBS_30.0()`, `make_meteo_EOBS()`, `make_soil_ISRIC()` |
+| Species parameters | `read_species()`, `set_species_param()` |
+| Check inputs | `check_inputs()`, `check_meteo_3DFEM()` |
+| Climate scenarios and virtual stands | `make_CCS()`, `virtual_stand_generator()` |
+| Run the model | `run_3DCMCCFEM()` (v. 5.6), `run_3DCMCCFEM_5.7()` (v. 5.7) |
+| Plot | `plot_output_3DFEM()`, `plot_meteo_3DFEM()`, `plot_soil_3DFEM()`, `make_gif_3DFEM()` |
+
+The model executables are compiled for Windows.
 ## Workflow
 
 Below is a schematic representation of the workflow of the package:
@@ -32,7 +53,7 @@ For initialization, the 3D-CMCC-FEM requires as input data:
 4. Annual atmospheric CO2 concentration and nitrogen deposition (optional)(Collalti et al., 2018). 
 5. Soil and topographic information: soil depth, average sand, clay, silt percentages, and elevation.
 
-All input data need to be written into separate .txt files whose structure is fully described in the [**user manual**](https://www.forest-modelling-lab.com/_files/ugd/8a7700_d31451e9a5e64073b50c07f7f007eb71.pdf). Based on the input files and the argument set, the function wrapping the model (run_3DFEM) creates a setting file in the output directory used only by the internal C code; the user does not need to interact with the setting file. 
+All input data need to be written into separate .txt files whose structure is fully described in the [**user manual**](https://www.forest-modelling-lab.com/_files/ugd/8a7700_d31451e9a5e64073b50c07f7f007eb71.pdf). Based on the input files and the argument set, the function wrapping the model (run_3DCMCCFEM or run_3DCMCCFEM_5.7) creates a setting file in the input directory used only by the internal C code; the user does not need to interact with the setting file. 
 
 The main output variables of the 3D-CMCC-FEM (either a daily, monthly, or annual scale) are Gross Primary Productivity (GPP), Net Primary Productivity (NPP), and state variables such as evapotranspiration (ET), Leaf Area Index (LAI), and rain interception (to cite some). Results are obtained either at class level (species, diameter, height, or age class level), layer level (as the sum of all tree height classes in the same layer), and grid level (as the sum of all classes in the different layers). The model provides information to support decision-making in forest management planning, such as mean annual volume increment (MAI), current volume increment (CAI), basal area, and DBH. 
 
@@ -40,7 +61,7 @@ For detailed information about 3D-CMCC-FEM and its applications, we strongly enc
 
 ## Running simulations 
 
-The main function of the package is run_3DCMCCFEM, which is a wrapper of the C code compiled in the .exe file provided within the package. The function allows the model to be run from the R environment. Each argument of the C functions is matched in the wrapper so that the model can be launched with every possible setting. First, the function performs several checks needed to ensure the consistency of all arguments specified by the user, then checks the consistency against the model specifications, and finally builds the system call to run the model, translating the R-code to a Bash call. All the inputs needed for the simulation (see the 3D-CMCC-FEM User Guide parag. 4 for a detailed overview of each input file), must be in the same directory, whose path is an input for the function. The output is saved locally following a root path that depends on the simulation setting (i.e., temporal scale of the output, name of the simulated site, whether the simulation has been performed with fixed CO2 or active management, etc.) and is managed internally by the C-code. The user needs to specify the working directory where to save the simulation outputs, and the function creates the tree path accordingly. The output files saved by the function consist of the main output file, which contains fluxes and stock values for each time step (i.e. day, month, year), each species and layer (see the 3D-CMCC-FEM User Guide pararg. 4.10 for the detailed output list), a debug file, where, in case of failed simulation, all the errors of the run and the list of the input file used for the simulation are reported (helpful in debugging and sharing). 
+The main functions of the package are run_3DCMCCFEM (model version 5.6) and run_3DCMCCFEM_5.7 (model version 5.7), which are wrappers of the C code compiled in the .exe files provided within the package. The function allows the model to be run from the R environment. Each argument of the C functions is matched in the wrapper so that the model can be launched with every possible setting. First, the function performs several checks needed to ensure the consistency of all arguments specified by the user, then checks the consistency against the model specifications, and finally builds the system call to run the model, translating the R-code to a Bash call. All the inputs needed for the simulation (see the 3D-CMCC-FEM User Guide parag. 4 for a detailed overview of each input file), must be in the same directory, whose path is an input for the function. The output is saved locally following a root path that depends on the simulation setting (i.e., temporal scale of the output, name of the simulated site, whether the simulation has been performed with fixed CO2 or active management, etc.) and is managed internally by the C-code. The user needs to specify the working directory where to save the simulation outputs, and the function creates the tree path accordingly. The output files saved by the function consist of the main output file, which contains fluxes and stock values for each time step (i.e. day, month, year), each species and layer (see the 3D-CMCC-FEM User Guide pararg. 4.10 for the detailed output list), a debug file, where, in case of failed simulation, all the errors of the run and the list of the input file used for the simulation are reported (helpful in debugging and sharing). 
 
 ## Pubblication
 

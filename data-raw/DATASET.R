@@ -51,13 +51,14 @@ colnames(ex05)[13] <- "dtm"
 colnames(ex15)[13] <- "dtm"
 shp_infc05 <- ex05
 shp_infc15 <- ex15
+
 # load internal data ------------------------------------------------------
 
 
 usethis::use_data(meteo_or,co2_or,tl_infc05,tl_infc15,shp_infc05,shp_infc15,internal=TRUE,overwrite = TRUE,compress="xz")
 
 # load external data ------------------------------------------------------
-
+setwd("E:/R3DFEM")
 specie <- read.csv("E:/R3DFEM/data-raw/specie.csv",header = T,sep=";")
 tree_level_species <- read.csv("E:/R3DFEM/data-raw/aggregation.csv",header = T,sep=";")
 usethis::use_data(specie,internal=FALSE,overwrite = TRUE,compress="xz")

@@ -9,7 +9,7 @@ make_meteo_EOBS(
   crs = NULL,
   buffer = 100,
   id = NULL,
-  daterange = c("1980-01-01", "2022-06-30"),
+  daterange = c("1950-01-01", "2023-12-31"),
   convert_rad = TRUE,
   parallel = FALSE,
   site = NULL,
@@ -33,7 +33,7 @@ points}
 which to extract climate data. Must be in the form yyyy-mm-dd}
 
 \item{convert_rad}{Logical: Should the solar radiation be converted from
-radiant to Wh/m-2? Default to TRUE.}
+W m-2 (E-OBS unit) to MJ m-2 day-1 (model unit)? Default to TRUE.}
 
 \item{parallel}{Logical: Should the extraction be performed in parallel? Default to FALSE}
 
@@ -45,13 +45,13 @@ radiant to Wh/m-2? Default to TRUE.}
 as a data.frame? Default to FALSE}
 }
 \value{
-Used for its side effects.It save in \code{outdir} a file
+Used for its side effects. It saves in \code{outdir} a file
 site_meteo.txt The output file have the colums:
 \itemize{
 \item \emph{Year}: Reference year for the meteo data
 \item \emph{Month}: number of month in the year
 \item \emph{n_day}: number of day in the month
-\item \emph{Rg_f}: Solar radiation on the ground (in  Wh/m-2)
+\item \emph{Rg_f}: Solar radiation on the ground (in MJ m-2 day-1)
 \item \emph{Ta_f}: Mean temperature (in °C)
 \item \emph{Tmax}: Maximum temperature (in °C)
 \item \emph{Tmin}: Minimum temperature (in °C)
@@ -68,18 +68,17 @@ site_meteo.txt The output file have the colums:
 \code{make_meteo_EOBS} use the
 \href{https://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php#datafiles/}{E-OBS
 database} to create the meteo input file according to the 3DCMCCFEM model
-specifications. The time period covered by E-OBS is 1950-01-01 - 2022-06-30.
+specifications. The time period covered by E-OBS is 1950-01-01 - 2023-12-31.
 }
 \details{
-This function use the version 26.0 of the E-OBS climate data to
-generate the input file for the 3D-CMCC-FEM model. If parallel=TRUE, user
-ca register his own backhand, otherwise the function will register a
-7-workers implicit cluster based on \code{\link[foreach]{foreach}} and
-\code{\link[doParallel]{registerDoParallel}}. For more information on meteo
-file needed by the model please refer to the \href{
-http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
+This function use the version 29.0 of the E-OBS climate data to
+generate the input file for the 3D-CMCC-FEM model. If parallel=TRUE, the
+user can set a future plan, otherwise the function will use a
+7-workers \code{future::plan("multisession")} with
+\code{\link[foreach]{foreach}} and the doFuture package. For more information on meteo
+file needed by the model please refer to the \href{http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 Guide}
 }
 \seealso{
-\code{\link{run_3DFEM}}
+\code{\link{run_3DCMCCFEM}}, \code{\link{make_meteo}}
 }

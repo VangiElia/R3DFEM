@@ -8,7 +8,16 @@
 #' @param soil_file_path Character vector: vector of paths to soil.txt input files.
 #' @param save_plot Logical: Should plots be saved in outdir? Default to FALSE.
 #' @param outdir Character: path to the output directory.
-#' @inheritParams plotrix::triax.plot
+#' @param main Character: title of the plot.
+#' @param show.names,show.lines Logical: show the names of the USDA texture
+#'   classes and the lines between them? Default to TRUE.
+#' @param col.names,bg.names Colors of the names of the texture classes and
+#'   of their background.
+#' @param show.grid,col.grid,lty.grid Show a grid, and its color and line type.
+#' @param col.axis,col.lines Colors of the axes and of the class lines.
+#' @param show.legend,label.points,point.labels,col.symbols,pch Arguments
+#'   passed to \code{plotrix::triax.points}.
+#' @param ... Other arguments passed to \code{plotrix::triax.points}.
 #'
 #' @details The function plots the textural characteristics of soil from the
 #'   input soil.txt file required by the 3D-CMCC-FEM model. Based on the
@@ -24,7 +33,7 @@
 
 plot_soil_3DFEM <-
   function (soil_file_path = NULL,
-            save_plot=TRUE,
+            save_plot=FALSE,
             outdir=NULL,
             main = "",
             show.names = TRUE,
@@ -46,19 +55,17 @@ plot_soil_3DFEM <-
     # argument check ----------------------------------------------------------
 
 
-    if(length(soil_file_path)!=1){
-
-      sl <- lapply(soil_file_path,read.table,header = T, sep = ",")
-      sl <- do.call(rbind,sl)
-
-    }else{
-
-      if(!check_char(soil_file_path))stop("soil_file_path should be a valid path to a soil.txt file")
-      sl <- read.table(soil_file_path, header = T, sep = ",")
-
+    if(!is.character(soil_file_path) || length(soil_file_path) == 0 || !all(file.exists(soil_file_path))){
+      stop("soil_file_path should be a vector of valid paths to soil.txt files")
     }
+    # soil files can contain comments starting with '//'
+    read_soil <- function(f) {
+      lines <- trimws(gsub("//.*", "", readLines(f, warn = FALSE)))
+      utils::read.table(text = lines[nzchar(lines)], header = TRUE, sep = ",")
+    }
+    sl <- do.call(rbind, lapply(soil_file_path, read_soil))
 
-    texture <- sl[, 8:6]
+    texture <- sl[, c("SAND_PERC", "SILT_PERC", "CLAY_PERC")]
 
     # base param --------------------------------------------------------------
     axis.labels = c("percent sand", "percent silt", "percent clay")
@@ -74,10 +81,10 @@ plot_soil_3DFEM <-
 
     if(save_plot){
       check_dir(outdir)
-      name <- basename(soil_file_path)
-      site <- gsub("_soil.txt","",name)
+      site <- gsub("_soil.txt","",basename(soil_file_path))
+      site <- if (length(site) == 1) site else paste0(site[1], "_and_", length(site) - 1, "_others")
       filename <- file.path(outdir,paste0(site,".png"))
-      png(filename,width = 40,height = 30, units = "cm",res=300)
+      grDevices::png(filename,width = 40,height = 30, units = "cm",res=300)
       }
 
 
@@ -184,7 +191,7 @@ plot_soil_3DFEM <-
         ...
       )
     if(save_plot){
-      dev.off()
+      grDevices::dev.off()
     }
 
   }

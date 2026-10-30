@@ -41,19 +41,23 @@
 #'
 #'   The input co2 data.frame must have the colums:
 #'   \itemize{
-#'   \item \emph{Year}: Reference year for the co2 data
+#'   \item \emph{year}: Reference year for the co2 data
 #'   \item \emph{CO2_ppm}: CO2 concentration (in ppm)
 #'   }
 #'
-#'   All the year of simulation must be included in the meteo and co2 input
-#'   files. For more info on the stand input data needed see the official \href{
-#'   http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
+#'   Only the years up to \code{obs_year[2]} of the input data are kept,
+#'   then the years from \code{obs_year[2] + 1} to \code{end_year} are filled
+#'   by randomly resampling (with a fixed seed, leap years with leap years)
+#'   the years in \code{obs_year}. All the year of simulation must be included in the meteo and co2 input
+#'   files. For more info on the stand input data needed see the official \href{http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 #'   Guide}
 #'
-#' @return Used for its side effects.It save in \code{outdir} a meteo.txt and
-#'   co2.txt file with the same columns of the input data
-#' @seealso \code{\link{run_3DFEM}}
+#' @return Used for its side effects. It saves in \code{outdir} a meteo.txt and
+#'   co2.txt file with the same columns of the input data and returns
+#'   invisibly the table of resampled years.
+#' @seealso \code{\link{run_3DCMCCFEM}}
 #' @export
+
 
 make_CCS <-
   function(meteo = NULL,
@@ -68,127 +72,79 @@ make_CCS <-
     check_dir(outdir)
     stopifnot(
       "obs_year must be a numeric vector of length 2" = check_len_num(obs_year,len =2),
-      "end_year must be a number" = check_num(end_year)
+      "end_year must be a number" = check_num(end_year),
+      "end_year must be greater than obs_year[2]" = end_year > obs_year[2]
     )
+    obs_year <- sort(obs_year)
+
+    read_input <- function(x, name, reader) {
+      if (is.character(x)) {
+        outname <- file.path(outdir, if (keep_name) basename(x) else paste0("detrended_", basename(x)))
+        x <- reader(x)
+      } else if (is.data.frame(x)) {
+        x <- as.data.frame(x)
+        outname <- file.path(outdir, paste0("detrended_", name, ".txt"))
+      } else {
+        stop(name, " is of the wrong class")
+      }
+      list(data = x, outname = outname)
+    }
 
     if (!is.null(meteo)) {
-      if (class(meteo) == "character") {
-        if(keep_name){
-          outname <- file.path(outdir,basename(meteo))
-        }else{
-          outname <- file.path(outdir,paste0("detrended_",basename(meteo)))
-        }
-        meteo <- read.table(meteo, header = T, sep = "\t")
-      } else if (class(meteo) %in% c("data.frame", "data.table", "tbl_df", "tbl")) {
-        meteo <- meteo
-        outname <-  file.path(outdir, "detrended_meteo.txt")
-      } else{
-        stop("meteo is of the wrong class")
-      }
-    }
-    if (!is.null(meteo)) {
+      m <- read_input(meteo, "meteo", function(f) utils::read.table(f, header = TRUE, sep = "\t"))
+      meteo <- m$data
       range_year <- range(meteo$Year)
       stopifnot(
-        "First year of observation must be >= of first year in meteo data" = obs_year[1] >=
-          range_year[1],
-        "Last year of observation must be <= of last year in meteo data" =
-          obs_year[2] <= range_year[2]
+        "First year of observation must be >= of first year in meteo data" = obs_year[1] >= range_year[1],
+        "Last year of observation must be <= of last year in meteo data" = obs_year[2] <= range_year[2]
       )
     }
 
     if (!is.null(co2)) {
-      if (class(co2) == "character") {
-        if(keep_name){
-          outname_co2 <- file.path(outdir,basename(co2))
-        }else{
-          outname_co2 <- file.path(outdir,paste0("detrended_",basename(co2)))
-        }
-        co2 <- read.table(co2, header = T)
-      } else if (class(co2) %in% c("data.frame", "data.table", "tbl_df", "tbl")) {
-        co2 <- co2
-        outname_co2 <-  file.path(outdir, "detrended_co2.txt")
-      } else{
-        stop("co2 is of the wrong class")
-      }
-    }
-    if (!is.null(co2)) {
+      co <- read_input(co2, "co2", .read_co2)
+      co2 <- co$data
+      colnames(co2)[1] <- "year"
       range_year <- range(co2$year)
       stopifnot(
-        "First year of observation must be >= of first year in CO2 data" = obs_year[1] >=
-          range_year[1],
-        "Last year of observation must be <= of last year in CO2 data" =
-          obs_year[2] <= range_year[2]
+        "First year of observation must be >= of first year in CO2 data" = obs_year[1] >= range_year[1],
+        "Last year of observation must be <= of last year in CO2 data" = obs_year[2] <= range_year[2]
       )
     }
-    # - -----------------------------------------------------------------------
 
-    set.seed(4)
+    # resampling of the years ------------------------------------------------
 
-    # definisce anni per resampling
-    lista_year = obs_year[1]:obs_year[2]
-    lista_year = data.frame('year' = lista_year)
-    lista_year$isleap = lubridate::leap_year(lista_year$year)
+    # observed years used for resampling
+    lista_year <- obs_year[1]:obs_year[2]
+    isleap <- lubridate::leap_year(lista_year)
+    new_years <- (obs_year[2] + 1):end_year
+    new_leap <- lubridate::leap_year(new_years)
+    if (any(new_leap) && !any(isleap)) stop("There are no leap years in obs_year: cannot resample leap years")
+    if (any(!new_leap) && all(isleap)) stop("There are no non-leap years in obs_year: cannot resample non-leap years")
 
-    # sample anni random dagli anni osservati da far corrispondere agli anni da obs_year[2] a end_year
-    #considerando gli anni bisestili
+    # sample random years from the observed ones, matching leap years
+    pick <- function(x) x[sample.int(length(x), 1)]
+    anni_random <- withr::with_seed(4, vapply(new_leap, function(l) pick(lista_year[isleap == l]), numeric(1)))
+    anni_random <- data.frame('anni_or' = anni_random, 'anni_new' = new_years)
 
-    anni_random <- c()
-
-    for (cy in seq(obs_year[2]+1,end_year)) {
-      anni_random = c(anni_random,sample(lista_year$year[lista_year$isleap == lubridate::leap_year(cy)])[1])
+    resample <- function(df, ycol) {
+      out <- do.call(rbind, lapply(seq_len(nrow(anni_random)), function(i) {
+        tmp <- df[df[[ycol]] == anni_random$anni_or[i], ]
+        tmp[[ycol]] <- anni_random$anni_new[i]
+        tmp
+      }))
+      # observed data after obs_year[2] are replaced by the resampled years
+      rbind(df[df[[ycol]] <= obs_year[2], ], out)
     }
-
-    anni_random = data.frame('anni_or' = anni_random,
-                             'anni_new' = (obs_year[2] + 1):end_year)
-
-    # internal data loading ---------------------------------------------------
 
     #METEO
     if (!is.null(meteo)) {
-      meteo_or <- meteo
-
-      meteo_random <-
-        do.call(rbind, lapply(seq_along(anni_random$anni_or), function(i) {
-          tmp <- meteo_or[meteo_or$Year == anni_random$anni_or[i], ]
-          tmp$Year <- anni_random$anni_new[i]
-          return(tmp)
-        }))
-
-      meteo_random <- rbind(meteo,meteo_random)
-
-      write.table(
-        meteo_random,
-        file = outname,
-        quote = F,
-        sep = '\t',
-        row.names = F
-      )
-      message(outname," saved!")
-
+      utils::write.table(resample(meteo, "Year"), file = m$outname, quote = F, sep = '\t', row.names = F)
+      message(m$outname," saved!")
     }
     #CO2
     if (!is.null(co2)) {
-      co2_or <- co2
-      co2_random <-
-        do.call(rbind, lapply(seq_along(anni_random$anni_or), function(i) {
-          tmp <- co2_or[co2_or$year == anni_random$anni_or[i], ]
-          tmp$year <- anni_random$anni_new[i]
-          return(tmp)
-        }))
-
-      co2_random <- rbind(co2,co2_random)
-
-      write.table(
-        co2_random,
-        file = outname_co2,
-        quote = F,
-        sep = '\t',
-        row.names = F
-      )
-      message(outname_co2," saved!")
-
+      utils::write.table(resample(co2, "year"), file = co$outname, quote = F, sep = '\t', row.names = F)
+      message(co$outname," saved!")
     }
-
+    invisible(anni_random)
 }
-
-#make_CCS(meteo="E:/meteo.txt",co2="E:/co2.txt",obs_year=c(2010,2022),end_year = 2099,outdir="E:/xxx")

@@ -6,8 +6,9 @@
 #' specifications.
 #'
 #' @param plot Sf object or something that can be converted to an sf point object
-#'   (i.e., a data.frame of coordinates). If plot is a data.frame the argument
-#'   crs must be specified.
+#'   (i.e., a data.frame of coordinates). If plot is a data.frame the first two
+#'   colums must specify X and Y coordinates. if plot ia a data.frame the
+#'   argument crs must be specified.
 #' @param crs Numeric: a valid EPSG code
 #' @param buffer Numeric: buffer around plot to extract meteo data from
 #' @param id Character: name of the column in \code{plot} that identifies different
@@ -17,13 +18,14 @@
 #' @param return_df Logical: should the climate data be returned by the function
 #'   as a data.frame? Default to FALSE
 #'
-#' @details This function computes the weighted mean percentage of sand, silt, and
-#'   clay in the first meter of soil. For more information on soil file needed
-#'   by the model, please refer to the \href{
-#'   http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
+#' @details This function compute the mean percentage of sand, silt and
+#'   clay in the first meter of soil, weighted by the thickness of the
+#'   SoilGrids layers (0-5, 5-15, 15-30, 30-60, 60-100 cm). The file is
+#'   written with \code{\link{make_soil}}. For more information on soil file needed
+#'   by the model please refer to the \href{http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 #'    Guide}
 #'
-#' @return Used for its side effects.It save in \code{outdir} a file
+#' @return Used for its side effects. It saves in \code{outdir} a file
 #'   site_soil.txt. The most important columns in this file are:
 #'   \itemize{
 #'   \item \emph{X}: x cell position
@@ -34,16 +36,13 @@
 #'   \item \emph{CLAY_PERC}: soil clay (in %)
 #'   \item \emph{SILT_PERC}: soil silt (in %)
 #'   \item \emph{SAND_PERC}: soil sand (in %)
-#'   \item \emph{SAND_PERC}: soil sand (in %)
-#'   \item \emph{SOIL_DEPTH}: soil depth (in m)
+#'   \item \emph{SOIL_DEPTH}: soil depth (in cm), 100 by default
 #'   \item \emph{FR}:0.9 by default. Fertility rating (dim) (only LUE version)
 #'   \item \emph{FN0}:0.5 by default. Value of fertility modifier when FR=0 (dim) (only LUE version)
 #'   \item \emph{M0}:0.2 by default. Value of ‘m’ when FR=0 (dim) (only LUE version)
 #'   }
-#' @seealso \code{\link{run_3DFEM}}
+#' @seealso \code{\link{make_soil}}, \code{\link{run_3DCMCCFEM}}
 #' @export
-
-
 
 make_soil_ISRIC <- function(plot,crs=NULL,buffer=100,id=NULL,site=NULL,outdir=NULL,return_df=FALSE){
 
@@ -52,110 +51,61 @@ make_soil_ISRIC <- function(plot,crs=NULL,buffer=100,id=NULL,site=NULL,outdir=NU
     "buffer must be a number" =  check_num(buffer)
   )
 
-  if(is.null(site)&!is.null(id)){
+  if(is.null(site)&&!is.null(id)){
     warning("Argument 'site' is missing with no default. It will be dropped in the file name and id will be used instead.")
   }
 
-  if(is.null(site)&is.null(id)){
+  if(is.null(site)&&is.null(id)){
     warning("Argument 'site' is missing with no default and id is NULL. A temporary site name will be used.")
+    site <- "tmp"
   }
 
-  if(!any(class(plot)%in%c("sf"))){
+  if(!inherits(plot,"sf")){
     if(is.null(crs)){
       stop("If argument 'plot' is not an sf object, the crs of coordinates must be given")
     }
-    if(class(sf::st_crs(crs))!="crs"){
+    if(is.na(sf::st_crs(crs))){
       stop("Argument 'crs' should be something suitable as input to sf::st_crs")
     }
     plot <- sf::st_as_sf(as.data.frame(plot),coords = c(1,2),crs=crs)
   }
 
-  if(nrow(plot)!=1){
-    if(!check_char(id)){
-      stop("Argument 'id' must be a character vector of length 1")
-    }
+  if(nrow(plot)!=1 && !check_char(id)){
+    stop("Argument 'id' must be a character vector of length 1")
   }
-
-  #eventually for parallelization
-  #unregister <- function() {
-  #  env <- foreach:::.foreachGlobals
-  #  rm(list=ls(name=env), pos=env)
-  #}
 
   plot <- sf::st_transform(plot,4326)
   latlon <- as.data.frame(sf::st_coordinates(plot))
   plot <- sf::st_buffer(plot,buffer)
-  rst <- system.file("extdata/ISRIC.tif",package = "R3DFEM")
-  rst <- terra::rast(rst)
+  rst <- terra::rast(system.file("extdata/ISRIC.tif",package = "R3DFEM"))
 
-  if(!is.null(id)) {
-    soil <- exactextractr::exact_extract(rst, plot, "mean",append_cols=id)
-  } else{
-    soil <- exactextractr::exact_extract(rst, plot, "mean")
-  }
+  soil <- exactextractr::exact_extract(rst, plot, "mean", append_cols = id, progress = FALSE)
   gc()
 
-  deep <- c(rep(c(5,10,15,30,40),3))
-  if(!is.null(id)){
-    idd <- soil[[id]]
-    soil[[id]] <- NULL
+  # thickness (cm) of the SoilGrids layers 0-5, 5-15, 15-30, 30-60, 60-100 cm
+  thickness <- c(5,10,15,30,40)
+  wmean <- function(var) {
+    cols <- grep(paste0("^mean\\.", var, "_"), colnames(soil), value = TRUE)
+    as.vector(as.matrix(soil[, cols]) %*% thickness / sum(thickness))
   }
+  clay <- wmean("clay")
+  sand <- wmean("sand")
+  silt <- wmean("silt")
+  tot <- clay + sand + silt
 
-  soil_weighted <-  sweep(soil,2,deep,FUN="/")
-  tot <- rowSums(soil_weighted)
-  soil_weighted <-  soil_weighted/tot*100
-  clay <- rowSums(soil_weighted[,1:5])
-  sand <- rowSums(soil_weighted[,6:10])
-  silt <- rowSums(soil_weighted[,11:15])
+  idd <- if (!is.null(id)) soil[[id]] else NULL
+  out <- lapply(seq_len(nrow(soil)), function(i) {
+    name <- if (is.null(id)) site else if (is.null(site)) idd[i] else paste0(site, "_", idd[i])
+    make_soil(site = name, lat = latlon[i, 2], lon = latlon[i, 1],
+              clay = clay[i] / tot[i] * 100, silt = silt[i] / tot[i] * 100, sand = sand[i] / tot[i] * 100,
+              soil_depth = 100, outdir = outdir)
+  })
+  soil <- do.call(rbind, out)
+  if (!is.null(id)) soil$id <- idd
 
-  soil <-
-    data.frame(
-      X = 0,
-      Y = 0,
-      LANDUSE = "F",
-      LAT = latlon[,2],
-      LON = latlon[,1],
-      CLAY_PERC = clay,
-      SILT_PERC = silt,
-      SAND_PERC = sand,
-      SOIL_DEPTH = 100,
-      FR=0.9,
-      FN0=0.5,
-      FNN=0.5,
-      M0=0.2,
-      LITTERC=-9999,
-      LITTERN=-9999,
-      SOILC=-9999,
-      SOILN=-9999,
-      DEADWOODC=-9999
-    )
-
-  if(!is.null(id)){
-    soil$id <- idd
-    for (i in 1:length(idd)) {
-      out <- soil[soil$id==idd[i],]
-      out$id <- NULL
-      if(is.null(site)){
-        write.table(out,paste0(outdir,"/",idd[i],"_soil.txt"),row.names=F,col.names=T,quote=FALSE,sep=",")
-        message("file ", paste0(outdir,"/",idd[i],"_soil.txt"), " saved")
-
-      }else{
-      write.table(out,paste0(outdir,"/",site,"_",idd[i],"_soil.txt"),row.names=F,col.names=T,quote=FALSE,sep=",")
-      message("file ", paste0(outdir,"/",site,"_",idd[i],"_soil.txt"), " saved")
-      }
-    }
-  }else{
-    if(is.null(site)){
-      site <- "tmp"
-      write.table(soil,paste0(outdir,"/",site,"_soil.txt"),row.names=F,col.names=T,quote=FALSE,sep=",")
-      message("file ", paste0(outdir,"/",site,"_soil.txt"), " saved")
-    }else{
-    write.table(soil,paste0(outdir,"/",site,"_soil.txt"),row.names=F,col.names=T,quote=FALSE,sep=",")
-    message("file ", paste0(outdir,"/",site,"_soil.txt"), " saved")
-    }
-  }
   if(return_df){
     return(soil)
   }
+  invisible(soil)
 }
 

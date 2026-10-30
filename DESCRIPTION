@@ -1,6 +1,6 @@
 Package: R3DFEM
 Title: R wrapper for the 3D-CMCC-FEM model
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
     person(given= "Elia",family= "Vangi",email = "elia.vangi@isafom.cnr.it", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0000-0002-9772-2258")),
@@ -13,25 +13,41 @@ Description: This package is an R wrapper of the 3D-CMCC-FEM (https://www.forest
     storage and fluxes of Carbon, Water, and Nitrogen including the dynamics occurring in forest ecosystems.
     The model is able to reproduce dynamics occurring in homogeneous and heterogeneous forests with different plant species,
     for different ages, diameters and height classes competing with each other for resources.
-    Ther are also functions to facilitate the input creation according to the model specifications.
+    There are also functions to facilitate the input creation according to the model specifications.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Depends: 
-    R (>= 2.10)
-LazyData: true
+    R (>= 3.5.0)
 Imports: 
     data.table,
     dplyr,
+    ggplot2,
     exactextractr,
     foreach,
+    lubridate,
     magrittr,
+    reshape2,
     sf,
+    stringr,
     terra,
     withr,
-    zoo,
-    stringr
+    zoo
 Suggests: 
+    caret,
+    doFuture,
+    doParallel,
+    FNN,
+    future,
+    gifski,
+    gt,
+    ipred,
     magick,
+    plotrix,
+    RColorBrewer,
+    rgl,
     rLiDAR,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

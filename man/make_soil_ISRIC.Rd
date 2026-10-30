@@ -16,8 +16,9 @@ make_soil_ISRIC(
 }
 \arguments{
 \item{plot}{Sf object or something that can be converted to an sf point object
-(i.e., a data.frame of coordinates). If plot is a data.frame the argument
-crs must be specified.}
+(i.e., a data.frame of coordinates). If plot is a data.frame the first two
+colums must specify X and Y coordinates. if plot ia a data.frame the
+argument crs must be specified.}
 
 \item{crs}{Numeric: a valid EPSG code}
 
@@ -34,7 +35,7 @@ points}
 as a data.frame? Default to FALSE}
 }
 \value{
-Used for its side effects.It save in \code{outdir} a file
+Used for its side effects. It saves in \code{outdir} a file
 site_soil.txt. The most important columns in this file are:
 \itemize{
 \item \emph{X}: x cell position
@@ -45,8 +46,7 @@ site_soil.txt. The most important columns in this file are:
 \item \emph{CLAY_PERC}: soil clay (in \%)
 \item \emph{SILT_PERC}: soil silt (in \%)
 \item \emph{SAND_PERC}: soil sand (in \%)
-\item \emph{SAND_PERC}: soil sand (in \%)
-\item \emph{SOIL_DEPTH}: soil depth (in m)
+\item \emph{SOIL_DEPTH}: soil depth (in cm), 100 by default
 \item \emph{FR}:0.9 by default. Fertility rating (dim) (only LUE version)
 \item \emph{FN0}:0.5 by default. Value of fertility modifier when FR=0 (dim) (only LUE version)
 \item \emph{M0}:0.2 by default. Value of ‘m’ when FR=0 (dim) (only LUE version)
@@ -59,12 +59,13 @@ database to create the soil input file according to the 3DCMCCFEM model
 specifications.
 }
 \details{
-This function compute the weighted mean percentage of sand, silt and
-clay in the first meter of soil. For more information on soil file needed
-by the model please refer to the \href{
-http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
+This function compute the mean percentage of sand, silt and
+clay in the first meter of soil, weighted by the thickness of the
+SoilGrids layers (0-5, 5-15, 15-30, 30-60, 60-100 cm). The file is
+written with \code{\link{make_soil}}. For more information on soil file needed
+by the model please refer to the \href{http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 Guide}
 }
 \seealso{
-\code{\link{run_3DFEM}}
+\code{\link{make_soil}}, \code{\link{run_3DCMCCFEM}}
 }

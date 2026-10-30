@@ -12,13 +12,12 @@
 #'   the columns: \itemize{ \item \emph{X}: x cell position \item \emph{Y}: y
 #'   cell position \item \emph{ELEV}: Elevation of the stand
 #'
-#'   } For more info on the topo input data needed, see the official \href{
-#'   http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
+#'   } For more info on the topo input data needed see the official \href{http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 #'    Guide}
 #'
 #' @return Used for its side effects.It save in \code{outdir} as many topo
 #'   input files as the length of \code{elev} provided.
-#' @seealso \code{\link[=run_3DFEM]{run_3DFEM}}
+#' @seealso \code{\link{run_3DCMCCFEM}}
 #' @export
 
 
@@ -30,10 +29,10 @@ make_topo <- function(site=NULL,elev,outdir){
 
   if (is.null(site)) {
     warning("Argument 'site' is missing with no default. A temporary name will be given.")
-    site <- "tmp"
+    site <- if (length(elev) == 1) "tmp" else paste0("tmp_", seq_along(elev))
   }
 
-  if(!is.null(site)&length(site)!=length(elev)){
+  if(length(site)!=length(elev)){
     stop("If site is not NULL should be the same length of elev")
   }
 

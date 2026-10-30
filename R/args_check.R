@@ -27,7 +27,7 @@ check_dir <-  function(x) {
     stop("outdir must be provided")
   } else if (!dir.exists(x)) {
     message("Outdir does not exist. It will be created")
-    dir.create(x)
+    dir.create(x, recursive = TRUE)
   })
 }
 

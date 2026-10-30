@@ -27,10 +27,9 @@ files as the length of the \code{elev} vector.The output topo.txt file has
 the columns: \itemize{ \item \emph{X}: x cell position \item \emph{Y}: y
 cell position \item \emph{ELEV}: Elevation of the stand
 
-} For more info on the topo input data needed see the official \href{
-http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
+} For more info on the topo input data needed see the official \href{http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 Guide}
 }
 \seealso{
-\code{\link[=run_3DFEM]{run_3DFEM}}
+\code{\link{run_3DCMCCFEM}}
 }

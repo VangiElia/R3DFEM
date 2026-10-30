@@ -1,0 +1,35 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# heavy data not stored on GitHub (E-OBS climate data and SoilGrids raster):
+# make_meteo_EOBS*() and make_soil_ISRIC() need them in inst/extdata
+inst/extdata/*.nc
+inst/extdata/ISRIC.tif
+inst/extdata/ISRIC.tif.aux.xml
+
+# local test files of the model executables
+inst/extdata/Debug/*.txt
+
+# local material not part of the package
+R3DFEM.git/
+exe/
+paper/
+study_case/
+calibrazione_richards/
+es_output/
+data-raw/INFC/
+data-raw/BilyKriz_*.txt
+data-raw/Piceaabies.txt
+data-raw/specie.csv
+data-raw/validation_soro.csv
+create_R3DFEM.R
+README.txt
+
+# R CMD build / check output
+*.tar.gz
+*.Rcheck/
+doc
+Meta
+inst/doc

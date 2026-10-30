@@ -68,7 +68,8 @@ Default to -9999.}
 \item{rep_height}{Integer: Average height of replanted trees; Default to
 -9999.}
 
-\item{rep_species}{Integer: Species of replanted trees}
+\item{rep_species}{Character: Species of replanted trees (name of the
+parameterization file); Default to -9999.}
 
 \item{reg_trees}{Integer: Number of saplings; Default to -9999.}
 
@@ -89,20 +90,20 @@ maximum at the beginning of simulation (1 = 100\%); Default to 1}
 \item{cell}{Numeric: Size of the cell; Default to 100 (1 ha)}
 
 \item{pruning}{Character: Do pruning be performed? options: c("on","off");
-Default to "off}
+Default to "off"}
 
 \item{irrigation}{Character: Do irrigation be performed? options:
-c("on","off"); Default to "off}
+c("on","off"); Default to "off"}
 
 \item{inputdir}{Character: Path to input files directory}
 
-\item{outputdir}{Character: Path to output files directory}
+\item{outputdir}{Character: Path to output files directory. If it is not
+named 'output', a subdirectory 'output' is created.}
 }
 \value{
-Used for its side effects.It save in \code{outdir} a site_stand_age_stand.txt file with
-stand charateristics. For all details of the stand file
-please refer to the  \href{
-http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
+Used for its side effects. It saves in \code{outputdir/virtual_stand} a site_age_stand.txt file with
+stand charateristics and returns invisibly the virtual stands. For all details of the stand file
+please refer to the  \href{http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf}{User's
 Guide}
 }
 \description{
@@ -119,8 +120,8 @@ name of the site or the species: "site_stand.txt", "site_soil.txt",
 "site_topo.txt", "site_meteo.txt", "site_co2.txt", "species.txt". A
 "site_management.txt" file must be provided if required. Usually meteo and
 co2 files are de-trended climate data make with the \code{make_CCS}
-function. The starting and ending years of simulation are taken from the
-meteo file. If the stand age of the virtual stand is not present in
+function. The simulation starts from the first year of the stand file
+and ends with the last year of the meteo file. If the stand age of the virtual stand is not present in
 the simulation, a warning is throw and the user need to set the appropriate
 replanting parameters (man=on; year_start_man and all rep_* arguments). See
 the model specification for the correct use of replanting. This function

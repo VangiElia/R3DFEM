@@ -6,7 +6,7 @@
 \usage{
 plot_soil_3DFEM(
   soil_file_path = NULL,
-  save_plot = TRUE,
+  save_plot = FALSE,
   outdir = NULL,
   main = "",
   show.names = TRUE,
@@ -29,32 +29,26 @@ plot_soil_3DFEM(
 \arguments{
 \item{soil_file_path}{Character vector: vector of paths to soil.txt input files.}
 
-\item{save_plot}{Logical: Should plots be saved in outdir? Deafult to FALSE.}
+\item{save_plot}{Logical: Should plots be saved in outdir? Default to FALSE.}
 
 \item{outdir}{Character: path to the output directory.}
 
-\item{main}{The title of the triangle plot. Defaults to nothing.}
+\item{main}{Character: title of the plot.}
 
-\item{show.grid}{Whether to display grid lines at the ticks.}
+\item{show.names, show.lines}{Logical: show the names of the USDA texture
+classes and the lines between them? Default to TRUE.}
 
-\item{col.axis}{Color of the triangular axes, ticks and labels.}
+\item{col.names, bg.names}{Colors of the names of the texture classes and
+of their background.}
 
-\item{col.grid}{Color of the grid lines. Defaults to gray.}
+\item{show.grid, col.grid, lty.grid}{Show a grid, and its color and line type.}
 
-\item{lty.grid}{Type of line for the grid.}
+\item{col.axis, col.lines}{Colors of the axes and of the class lines.}
 
-\item{show.legend}{Logical - whether to display a legend.}
+\item{show.legend, label.points, point.labels, col.symbols, pch}{Arguments
+passed to \code{plotrix::triax.points}.}
 
-\item{label.points}{Logical - whether to call \samp{thigmophobe.labels} to
-  label the points.}
-
-\item{point.labels}{Optional labels for the points and/or legend.}
-
-\item{col.symbols}{Color of the symbols representing each value.}
-
-\item{pch}{Symbols to use in plotting values.}
-
-\item{...}{Additional arguments passed to \samp{points}.}
+\item{...}{Other arguments passed to \code{plotrix::triax.points}.}
 }
 \value{
 Invisible. The function is called for its side effects. If
