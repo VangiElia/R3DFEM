@@ -22,5 +22,10 @@
 ^inst/extdata/.*\.nc$
 ^inst/extdata/ISRIC\.tif$
 ^inst/extdata/ISRIC\.tif\.aux\.xml$
-^inst/extdata/Debug/.*\.txt$
 ^LICENSE$
+^vignettes/R3DFEM\.Rmd\.orig$
+^vignettes/precompute\.R$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$

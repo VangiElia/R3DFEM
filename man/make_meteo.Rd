@@ -33,9 +33,9 @@ Invisibly, the meteo data.frame. The file site_meteo.txt is saved in
 \code{make_meteo} converts a data.frame of daily weather data (e.g. from a
 weather station or a climate model) into the site_meteo.txt file required
 by the model. For European sites the data can be taken from E-OBS with
-\code{\link{make_meteo_EOBS_30.0}}.
+\code{\link{make_meteo_EOBS}}.
 }
 \seealso{
-\code{\link{make_meteo_EOBS_30.0}}, \code{\link{check_meteo_3DFEM}},
+\code{\link{make_meteo_EOBS}}, \code{\link{check_meteo_3DFEM}},
 \code{\link{make_CCS}}
 }

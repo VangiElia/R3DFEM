@@ -11,7 +11,9 @@ make_soil_ISRIC(
   id = NULL,
   site = NULL,
   outdir = NULL,
-  return_df = FALSE
+  return_df = FALSE,
+  isric_file = getOption("R3DFEM.isric_file", system.file("extdata", "ISRIC.tif", package
+    = "R3DFEM"))
 )
 }
 \arguments{
@@ -33,6 +35,11 @@ points}
 
 \item{return_df}{Logical: should the climate data be returned by the function
 as a data.frame? Default to FALSE}
+
+\item{isric_file}{Character: path of the SoilGrids raster (ISRIC.tif, not
+distributed with the package). Default to the option
+\code{R3DFEM.isric_file} or, if not set, to the extdata directory of the
+installed package.}
 }
 \value{
 Used for its side effects. It saves in \code{outdir} a file

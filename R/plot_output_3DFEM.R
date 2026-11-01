@@ -47,7 +47,7 @@ plot_output_3DFEM <-
     stopifnot("output_3DFEM must be a length 1 character vector"=check_char(output_3DFEM),
               "y must be a character vector containing column names of the 3DFEM output"=!is.null(y)&&is.character(y))
     #read data
-    df <- data.table::fread(output_3DFEM,sep=",",header=T,fill=T)
+    df <- data.table::as.data.table(read_output(output_3DFEM, date = FALSE))
     df <- df[complete.cases(df),]
     ind <- which(grepl("SPECI",colnames(df)))
     colnames(df)[ind] <- "SPECIE"
@@ -65,6 +65,8 @@ plot_output_3DFEM <-
       x.axis <- unlist(x.axis)
       cols <-c(x.axis,id.var,y)
       df <- df[,.SD,.SDcols = cols]
+      # integer (e.g. LIVETREE) and double variables in the same value column
+      df[, (y) := lapply(.SD, as.numeric), .SDcols = y]
       df <- data.table::melt(df,id.vars=c(x.axis,id.var))
     }
     if(!is.null(y)&!is.null(x)){

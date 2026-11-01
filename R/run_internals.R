@@ -1,13 +1,7 @@
-# Internal helpers shared by run_3DCMCCFEM() and run_3DCMCCFEM_5.7()
+# Internal helpers of run_3DCMCCFEM(), check_inputs() and run_batch()
 
-# path of the model executable shipped with the package
-.model_exe <- function(exe_name) {
-  exe <- system.file("extdata", "Debug", exe_name, package = "R3DFEM")
-  if (!nzchar(exe)) {
-    stop("Model executable '", exe_name, "' not found in R3DFEM/inst/extdata/Debug")
-  }
-  normalizePath(exe, winslash = "/")
-}
+# parameters of the species files required by the version 5.7 of the model
+.required_params <- "CONV_VOL_FACTOR"
 
 .normalize_dir <- function(x) {
   if (!dir.exists(x)) stop("Directory '", x, "' does not exist")
@@ -23,7 +17,13 @@
     outputdir <- file.path(outputdir, "output")
   }
   dir.create(outputdir, recursive = TRUE, showWarnings = FALSE)
-  normalizePath(outputdir, winslash = "/")
+  outputdir <- normalizePath(outputdir, winslash = "/")
+  # the model adds about 150 characters (output_<version>_<date>/<type>/<file>)
+  if (.Platform$OS.type == "windows" && nchar(outputdir) > 100) {
+    warning("outputdir is ", nchar(outputdir), " characters long: the model cannot write files whose ",
+            "full path is longer than 260 characters. Use a shorter outputdir if the run fails.")
+  }
+  outputdir
 }
 
 # checks on the combination of options (always performed, also with check_input = FALSE)
@@ -64,7 +64,9 @@
 
 # species parameterization file: named numeric vector of parameter values
 .read_species_values <- function(file) {
-  lines <- stringr::str_squish(gsub("//.*", "", readLines(file, warn = FALSE)))
+  # files saved with a byte order mark (BOM) would give a wrong first parameter
+  lines <- sub("^\xef\xbb\xbf", "", readLines(file, warn = FALSE), useBytes = TRUE)
+  lines <- stringr::str_squish(gsub("//.*", "", lines))
   lines <- lines[nzchar(lines)]
   parts <- strsplit(lines, " ")
   stats::setNames(suppressWarnings(as.numeric(vapply(parts, `[`, "", 2))),
@@ -86,7 +88,7 @@
 # consistency checks of the input files (performed when check_input = TRUE)
 .check_run_inputs <- function(site, species, year_start, year_end, man, pres_dens, after_pres,
                               reg, year_start_man, rep_par, reg_par, extra_species = NULL,
-                              inputdir, check_meteo = FALSE, required_params = NULL) {
+                              inputdir, check_meteo = FALSE, required_params = .required_params) {
 
   if (man == "on" && year_start_man == -9999) {
     stop("'man' = on: \n- Argument 'year_start_man' is missing, with no default.")
@@ -119,12 +121,12 @@
     stop("\nMissing parameterization file for species in '", site, "_stand.txt': ",
          paste0(sp_nofile, ".txt", collapse = ", "))
   }
-  # parameters required by the model version (e.g. CONV_VOL_FACTOR in 5.7)
+  # parameters required by the version 5.7 (e.g. CONV_VOL_FACTOR)
   for (s in unique(c(sp_stand, species, extra_species))) {
     miss_par <- setdiff(required_params, names(.read_species_values(file.path(inputdir, paste0(s, ".txt")))))
     if (length(miss_par) != 0) {
       stop("\nParameter(s) ", paste(miss_par, collapse = ", "), " missing in '", s,
-           ".txt' (required by this version of the model).")
+           ".txt' (required by the version 5.7 of the model, see list_species()).")
     }
   }
 
@@ -251,7 +253,7 @@
 .write_settings <- function(settings, inputdir, site, co2, man, year_start, year_end, output) {
   file <- paste0(site, "_settings_co2_", co2, "_man_", man, "_", year_start, "-", year_end, "_", output, ".txt")
   utils::write.table(settings, file = file.path(inputdir, file), col.names = FALSE, row.names = FALSE, quote = FALSE)
-  cat("Written settings file!\n")
+  message("Settings file written: ", file)
   file
 }
 
@@ -267,7 +269,7 @@
 .run_model <- function(exe, inputdir, outputdir, site, stand, settings, use_management,
                        tag, output, move_and_rename, start.time) {
 
-  cat(paste0("\nStart 3D-CMCC-FEM ", tag, "\n"))
+  message("Start 3D-CMCC-FEM ", tag)
   q <- function(x) shQuote(x, type = "cmd")
   args <- c("-i", q(paste0(inputdir, "/")),
             "-p", q(paste0(inputdir, "/")),
@@ -331,7 +333,6 @@
     to <- to[order(names(to) != output)]
   }
 
-  cat(paste0("\nSimulation complete!\n"))
-  cat(paste0("\nRunning time: ", format(round(difftime(Sys.time(), start.time), 1)), "\n"))
+  message("Simulation complete. Running time: ", format(round(difftime(Sys.time(), start.time), 1)))
   invisible(if (move_and_rename) to else NULL)
 }

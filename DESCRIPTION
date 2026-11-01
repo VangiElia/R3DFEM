@@ -1,6 +1,6 @@
 Package: R3DFEM
-Title: R wrapper for the 3D-CMCC-FEM model
-Version: 0.1.0
+Title: R Wrapper for the 3D-CMCC-FEM Forest Model (Version 5.7)
+Version: 0.2.0
 Authors@R: c(
     person(given= "Elia",family= "Vangi",email = "elia.vangi@isafom.cnr.it", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0000-0002-9772-2258")),
@@ -8,18 +8,24 @@ Authors@R: c(
            comment = c(ORCID = "https://orcid.org/0000-0002-4980-8487")),
     person(given= "Daniela", family="Dalmonech", email ="daniela.dalmonech@cnr.it", role = c("com"),
            comment = c(ORCID = "https://orcid.org/0000-0002-1932-5011")))
-Description: This package is an R wrapper of the 3D-CMCC-FEM (https://www.forest-modelling-lab.com/the-3d-cmcc-model)
-    (https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM). fully bio-geochemical (BGC version) forest model that simulates
-    storage and fluxes of Carbon, Water, and Nitrogen including the dynamics occurring in forest ecosystems.
-    The model is able to reproduce dynamics occurring in homogeneous and heterogeneous forests with different plant species,
-    for different ages, diameters and height classes competing with each other for resources.
-    There are also functions to facilitate the input creation according to the model specifications.
+Description: An R interface to the version 5.7 of the 3D-CMCC-FEM
+    (<https://www.forest-modelling-lab.com/the-3d-cmcc-model>,
+    <https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM>), a fully
+    bio-geochemical forest model that simulates storage and fluxes of carbon,
+    water and nitrogen in homogeneous and heterogeneous forests with different
+    species, ages, diameters and height classes competing for resources. The
+    package installs the model executable, prepares and checks the input files
+    (also from E-OBS climate data and SoilGrids), ships the species
+    parameterizations of the version 5.7, runs single or batches of
+    simulations, and reads and plots the outputs.
 License: GPL (>= 3)
+URL: https://github.com/VangiElia/R3DFEM, https://vangielia.github.io/R3DFEM/
+BugReports: https://github.com/VangiElia/R3DFEM/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Depends: 
-    R (>= 3.5.0)
+    R (>= 4.0.0)
 Imports: 
     data.table,
     dplyr,
@@ -37,17 +43,12 @@ Imports:
 Suggests: 
     caret,
     doFuture,
-    doParallel,
-    FNN,
     future,
-    gifski,
-    gt,
+    future.apply,
     ipred,
-    magick,
-    plotrix,
-    RColorBrewer,
-    rgl,
-    rLiDAR,
     knitr,
-    rmarkdown
+    plotrix,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
 VignetteBuilder: knitr

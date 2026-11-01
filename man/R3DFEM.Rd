@@ -3,12 +3,13 @@
 \docType{package}
 \name{R3DFEM}
 \alias{R3DFEM}
-\title{R3DFEM: An package for running the 3D-CMCC-FEM model.}
+\title{R3DFEM: an R package for running the 3D-CMCC-FEM model (version 5.7)}
 \description{
-The R3DFEM package provides functions for creating and check inputs for
-simulations, run the 3D-CMCC-FEM model, plot inputs and outputs and other
-functionalities. See \code{vignette("R3DFEM")} for an overview of the package
-functionality.
+The R3DFEM package provides functions to install the model, create and check
+the inputs of the simulations, run single simulations or batches of
+simulations of the 3D-CMCC-FEM (version 5.7), read and plot inputs and
+outputs. See \code{vignette("R3DFEM")} and \code{vignette("input-files")}
+for an overview of the package functionality.
 }
 \note{
 See the

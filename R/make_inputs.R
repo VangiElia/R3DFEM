@@ -128,7 +128,7 @@ make_co2 <- function(site, years, co2, outdir) {
     if (any(years < min(co2[[1]]) | years > max(co2[[1]]))) {
       warning("Some years are outside the range of the co2 data: the first/last value is used")
     }
-    value <- stats::approx(co2[[1]], co2[[2]], xout = years, rule = 2)$y
+    value <- if (nrow(co2) == 1) rep(co2[[2]], length(years)) else stats::approx(co2[[1]], co2[[2]], xout = years, rule = 2)$y
   } else if (is.numeric(co2) && length(co2) %in% c(1, length(years))) {
     value <- rep_len(co2, length(years))
   } else {
@@ -302,7 +302,7 @@ set_species_param <- function(file, ..., outfile = file) {
 #' \code{make_meteo} converts a data.frame of daily weather data (e.g. from a
 #' weather station or a climate model) into the site_meteo.txt file required
 #' by the model. For European sites the data can be taken from E-OBS with
-#' \code{\link{make_meteo_EOBS_30.0}}.
+#' \code{\link{make_meteo_EOBS}}.
 #'
 #' @param data data.frame with daily data. It must contain a column
 #'   \code{date} (Date or "yyyy-mm-dd") or the columns \code{Year},
@@ -320,7 +320,7 @@ set_species_param <- function(file, ..., outfile = file) {
 #'
 #' @return Invisibly, the meteo data.frame. The file site_meteo.txt is saved in
 #'   \code{outdir}.
-#' @seealso \code{\link{make_meteo_EOBS_30.0}}, \code{\link{check_meteo_3DFEM}},
+#' @seealso \code{\link{make_meteo_EOBS}}, \code{\link{check_meteo_3DFEM}},
 #'   \code{\link{make_CCS}}
 #' @export
 make_meteo <- function(data, site, rad_unit = c("MJ", "W"), check = TRUE, outdir) {
@@ -379,22 +379,21 @@ make_meteo <- function(data, site, rad_unit = c("MJ", "W"), check = TRUE, outdir
 #' Check the input files before running the 3DCMCCFEM model
 #'
 #' \code{check_inputs} performs the same consistency checks of
-#' \code{\link{run_3DCMCCFEM}} and \code{\link{run_3DCMCCFEM_5.7}} (presence
-#' of the input files, years in stand, meteo and co2 files, management and
-#' replanting options) without running the model.
+#' \code{\link{run_3DCMCCFEM}} (presence of the input files, parameters of
+#' the version 5.7 in the species files, years in stand, meteo and co2 files,
+#' management and replanting options) without running the model.
 #'
-#' @inheritParams run_3DCMCCFEM_5.7
+#' @inheritParams run_3DCMCCFEM
 #' @param rep_trees,rep_age,rep_dbh,rep_lai,rep_height,rep_species Replanting
 #'   parameters (number of trees, age, average DBH, LAI, height and species).
 #'   Default to -9999.
-#' @param version Character: version of the model that will be used, "5.6"
-#'   (\code{run_3DCMCCFEM}) or "5.7" (\code{run_3DCMCCFEM_5.7}). With "5.7"
-#'   the species files must contain the parameter CONV_VOL_FACTOR. Default to
-#'   "5.6"
 #'
 #' @return Invisibly TRUE if all checks are passed, otherwise an error is
 #'   thrown. Warnings are issued for possible inconsistencies.
-#' @seealso \code{\link{run_3DCMCCFEM}}, \code{\link{run_3DCMCCFEM_5.7}}
+#' @seealso \code{\link{run_3DCMCCFEM}}, \code{\link{setup_inputs}}
+#' @examples
+#' inp <- system.file("extdata", "bilykriz", "rcp0p0", package = "R3DFEM")
+#' check_inputs("BilyKriz", "Piceaabies", 1997, 2010, man = "off", inputdir = inp)
 #' @export
 check_inputs <- function(site, species, year_start, year_end, man, co2 = "on",
                          pres_dens = NULL, after_pres = NULL, reg = "off",
@@ -402,9 +401,7 @@ check_inputs <- function(site, species, year_start, year_end, man, co2 = "on",
                          rep_trees = -9999, rep_age = -9999, rep_dbh = -9999, rep_lai = -9999,
                          rep_height = -9999, rep_species = -9999, reg_species = -9999,
                          reg_trees = -9999, reg_age = -9999, reg_dbh = -9999, reg_lai = -9999,
-                         reg_height = -9999, inputdir, check_meteo = FALSE,
-                         version = c("5.6", "5.7")) {
-  version <- match.arg(version)
+                         reg_height = -9999, inputdir, check_meteo = FALSE) {
   .check_run_options(co2, man, pres_dens, after_pres, reg, "annual")
   .check_run_inputs(site = site, species = species, year_start = year_start, year_end = year_end,
                     man = man, pres_dens = pres_dens, after_pres = after_pres, reg = reg,
@@ -412,8 +409,7 @@ check_inputs <- function(site, species, year_start, year_end, man, co2 = "on",
                     rep_par = list(rep_trees, rep_age, rep_dbh, rep_lai, rep_height, rep_species),
                     reg_par = list(reg_trees, reg_age, reg_dbh, reg_lai, reg_height),
                     extra_species = c(rep_species, reg_species),
-                    inputdir = .normalize_dir(inputdir), check_meteo = check_meteo,
-                    required_params = if (version == "5.7") "CONV_VOL_FACTOR")
+                    inputdir = .normalize_dir(inputdir), check_meteo = check_meteo)
   message("All checks passed")
   invisible(TRUE)
 }

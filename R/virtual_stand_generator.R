@@ -6,6 +6,9 @@
 #' \code{stand_age} parameter are generated from the simulation output.
 #'
 #' @inheritParams run_3DCMCCFEM
+#' @param rep_trees,rep_age,rep_dbh,rep_lai,rep_height,rep_species Replanting
+#'   parameters (number of trees, age, average DBH, LAI, height and species).
+#'   Default to -9999.
 #' @param stand_age Numeric vector: age of the output virtual stands
 #'
 #' @details As the \code{run_3DCMCCFEM} function,  the
@@ -126,9 +129,7 @@ virtual_stand_generator <-
                                outputdir = outputdir,
                                move_and_rename = TRUE)
 
-    out <- utils::read.table(out_files[grepl("^annual_[^m]", basename(out_files))][1], header = TRUE, sep = ",")
-    # the species column is SPECIE in 5.6 and SPECIES in 5.7 outputs
-    colnames(out)[grepl("^SPECIE", colnames(out))] <- "SPECIE"
+    out <- read_output(out_files[["annual"]], date = FALSE)
     virtual <- out[out$AGE %in% stand_age, ]
 
     virtual_stands <-
@@ -137,7 +138,7 @@ virtual_stand_generator <-
         x = 0,
         y = 0,
         Age = virtual$AGE,
-        Species = virtual$SPECIE,
+        Species = virtual$SPECIES,
         Management = "T",
         N = virtual$LIVETREE,
         Stool = 0,

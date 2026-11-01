@@ -1,0 +1,193 @@
+---
+title: "Getting started with R3DFEM"
+author: "Elia Vangi"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with R3DFEM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<!-- This vignette is precomputed, because it needs the model executable.
+     Edit R3DFEM.Rmd.orig and run vignettes/precompute.R to update R3DFEM.Rmd -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4,
+                      fig.path = "figures/", dpi = 96, message = FALSE)
+```
+
+R3DFEM is an R interface to the version 5.7 of the
+[3D-CMCC-FEM](https://www.forest-modelling-lab.com/the-3d-cmcc-model), a
+bio-geochemical, process-based forest model that simulates carbon, water and nitrogen
+fluxes and stocks of homogeneous and heterogeneous forests. This vignette shows the
+whole workflow: install the model, prepare the inputs, run one or many simulations, read
+and plot the outputs. The creation of the input files is described in detail in
+`vignette("input-files")`.
+
+```{r load}
+library(R3DFEM)
+```
+
+## Installing the model
+
+The package does not contain the model executable. `install_model()` downloads the
+Windows build of the version 5.7 once, in a user directory; an executable already on
+disk can be installed with `install_model("path/to/3D_CMCC_Forest_Model_5.7.exe")` or
+used directly with `options(R3DFEM.exe = "path/to/executable")` (e.g. a binary compiled
+on Linux from the [source code](https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM)).
+
+```{r install, eval = FALSE}
+install_model()
+```
+
+```{r model}
+model_available()
+```
+
+## Inputs
+
+A simulation needs a directory with the stand, meteo, CO2, soil and topography files
+of the site and the parameterization of the species. The package contains complete
+input sets for three sites and the parameterizations of the version 5.7 for
+`r length(list_species())` species:
+
+```{r data}
+bk <- system.file("extdata", "bilykriz", "rcp0p0", package = "R3DFEM")
+list.files(bk)
+list_species()
+```
+
+`setup_inputs()` prepares an input directory in one call, from files, values or
+arguments of the `make_*()` helpers, and copies the species files. Here we start a new
+site from the Bily Kriz weather, with a stand of two cohorts of Norway spruce:
+
+```{r setup-inputs}
+inputdir <- file.path(tempdir(), "spruce")
+files <- setup_inputs("Spruce", inputdir,
+                      stand = list(year = 1997, age = c(16, 30), species = "Piceaabies",
+                                   n_trees = c(2000, 300), avdbh = c(7.1, 18), height = c(5.6, 14)),
+                      soil = list(lat = 49.3, lon = 18.32, clay = 20.6, silt = 20.6,
+                                  sand = 58.8, soil_depth = 80),
+                      topo = 875,
+                      meteo = file.path(bk, "BilyKriz_meteo.txt"),
+                      co2 = file.path(bk, "BilyKriz_co2.txt"),
+                      management = list(thinning = c(2005, 2015), thinning_int = c(20, 20),
+                                        harvesting = 2025))
+basename(files)
+```
+
+`check_inputs()` performs the checks of `run_3DCMCCFEM()` without running the model, for
+example the harvest of 2025 requires the replanting arguments:
+
+```{r check, error = TRUE}
+check_inputs("Spruce", "Piceaabies", year_start = 1997, year_end = 2040,
+             man = "var", pres_dens = "off", inputdir = inputdir)
+```
+
+## Running the model
+
+`run_3DCMCCFEM()` writes the settings file in `inputdir`, runs the model and returns the
+paths of the outputs, named by type. The model cannot write files whose full path is
+longer than 260 characters: use short output directories.
+
+```{r run}
+out <- "C:/r3dfem_vignette"
+
+off <- run_3DCMCCFEM(site = "Spruce", species = "Piceaabies",
+                     year_start = 1997, year_end = 2040, man = "off",
+                     output = "annual", inputdir = inputdir,
+                     outputdir = file.path(out, "off"))
+
+var <- run_3DCMCCFEM(site = "Spruce", species = "Piceaabies",
+                     year_start = 1997, year_end = 2040,
+                     man = "var", pres_dens = "off",
+                     rep_species = "Piceaabies", rep_trees = 2000, rep_age = 3,
+                     rep_dbh = 1, rep_lai = 1, rep_height = 1.3,
+                     output = "annual", inputdir = inputdir,
+                     outputdir = file.path(out, "var"))
+basename(var)
+```
+
+`read_output()` reads an output as a data.frame (one row per year, layer and class):
+
+```{r read}
+a <- read_output(var[["annual"]])
+a[a$YEAR %in% c(2004:2006, 2024:2026), c("YEAR", "LAYER", "AGE", "LIVETREE", "DBH", "HEIGHT", "NPP")]
+```
+
+## Plotting
+
+`plot_output_3DFEM()` plots one or more variables (optionally with a rolling mean) or a
+variable against another:
+
+```{r plot-output, fig.height = 5}
+plot_output_3DFEM(var[["annual"]], y = c("GPP", "NPP", "LIVETREE", "DBH"), text_size = 14)
+```
+
+## Many simulations
+
+`run_batch()` runs a set of simulations, one per row of a data.frame, each in its own
+directory with a copy of the inputs. The columns are arguments of `run_3DCMCCFEM()` (or
+parameters of the species file, see below); `inputdir` can change from run to run. With
+`parallel = TRUE` the simulations are run with the future plan set by the user:
+
+```{r batch}
+sites <- system.file("extdata", c("bilykriz/rcp0p0", "hyytiala", "soro"), package = "R3DFEM")
+runs <- data.frame(id = c("bilykriz", "hyytiala", "soroe"),
+                   site = c("BilyKriz", "Hyytiala", "Soroe"),
+                   species = c("Piceaabies", "Pinussylvestris", "Fagussylvatica"),
+                   inputdir = sites)
+
+future::plan("multisession", workers = 3)
+res <- run_batch(runs, outputdir = file.path(out, "sites"), year_start = 1997,
+                 year_end = 2050, man = "off", output = "annual", parallel = TRUE)
+future::plan("sequential")
+res[, c("id", "status")]
+```
+
+The outputs of all the runs can be read together:
+
+```{r batch-plot}
+all <- read_output(res$output)
+all$site <- basename(dirname(dirname(all$file)))
+ggplot2::ggplot(all, ggplot2::aes(YEAR, NPP, colour = site)) +
+  ggplot2::geom_line() +
+  ggplot2::theme_classic()
+```
+
+Columns named as species parameters change the parameterization of each run.
+`param_sensitivity()` uses this to show the effect of a parameter:
+
+```{r sensitivity}
+s <- param_sensitivity("LIGHT_TOL", value = 1:4, variable = c("GPP", "HEIGHT"),
+                       inputdir = bk, outputdir = file.path(out, "sens"),
+                       site = "BilyKriz", species = "Piceaabies",
+                       year_start = 1997, year_end = 2050, man = "off")
+s$plot
+```
+
+## Virtual stands
+
+`virtual_stand_generator()` simulates the stand development and writes stand files for
+age classes that are not observed, to be used as starting points of new simulations:
+
+```{r virtual}
+vdir <- file.path(tempdir(), "bk")
+dir.create(vdir)
+invisible(file.copy(list.files(bk, full.names = TRUE), vdir))
+vs <- virtual_stand_generator(site = "BilyKriz", species = "Piceaabies", stand_age = c(40, 60),
+                              man = "off", inputdir = vdir, outputdir = file.path(out, "virtual"))
+vs[, c("Age", "Species", "N", "AvDBH", "Height")]
+```
+
+```{r cleanup, include = FALSE}
+unlink(out, recursive = TRUE)
+```
+
+## References
+
+R3DFEM: an R package for running the 3D-CMCC-FEM model.
+*Earth Science Informatics* (2025). <https://link.springer.com/article/10.1007/s12145-025-01956-0>
+
+The model User Guide, with the full description of inputs and outputs, is available on
+the [Forest Modelling Lab web page](https://www.forest-modelling-lab.com/the-3d-cmcc-model).

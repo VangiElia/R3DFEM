@@ -28,8 +28,7 @@ check_inputs(
   reg_lai = -9999,
   reg_height = -9999,
   inputdir,
-  check_meteo = FALSE,
-  version = c("5.6", "5.7")
+  check_meteo = FALSE
 )
 }
 \arguments{
@@ -78,11 +77,6 @@ the first element of \code{species}.}
 
 \item{check_meteo}{Logical: Should the validity of the meteo file be checked
 with the function \code{\link{check_meteo_3DFEM}}? Default to FALSE}
-
-\item{version}{Character: version of the model that will be used, "5.6"
-(\code{run_3DCMCCFEM}) or "5.7" (\code{run_3DCMCCFEM_5.7}). With "5.7"
-the species files must contain the parameter CONV_VOL_FACTOR. Default to
-"5.6"}
 }
 \value{
 Invisibly TRUE if all checks are passed, otherwise an error is
@@ -90,10 +84,14 @@ thrown. Warnings are issued for possible inconsistencies.
 }
 \description{
 \code{check_inputs} performs the same consistency checks of
-\code{\link{run_3DCMCCFEM}} and \code{\link{run_3DCMCCFEM_5.7}} (presence
-of the input files, years in stand, meteo and co2 files, management and
-replanting options) without running the model.
+\code{\link{run_3DCMCCFEM}} (presence of the input files, parameters of
+the version 5.7 in the species files, years in stand, meteo and co2 files,
+management and replanting options) without running the model.
+}
+\examples{
+inp <- system.file("extdata", "bilykriz", "rcp0p0", package = "R3DFEM")
+check_inputs("BilyKriz", "Piceaabies", 1997, 2010, man = "off", inputdir = inp)
 }
 \seealso{
-\code{\link{run_3DCMCCFEM}}, \code{\link{run_3DCMCCFEM_5.7}}
+\code{\link{run_3DCMCCFEM}}, \code{\link{setup_inputs}}
 }

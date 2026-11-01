@@ -1,0 +1,181 @@
+---
+title: "Input files and species parameters"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Input files and species parameters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+```
+
+```{r load}
+library(R3DFEM)
+```
+
+The 3D-CMCC-FEM needs a set of .txt files, all in the same directory and named after the
+site (`Site`) or the species. This vignette describes them and the helpers that create
+them. All the helpers write the file in `outdir` and return the data invisibly;
+`setup_inputs()` calls them in one go (see `vignette("R3DFEM")`).
+
+| File | Content | Helpers |
+|---|---|---|
+| `Site_stand.txt` | initial stand: species, age, number of trees, DBH, height per class | `make_stand()`, `virtual_stand_generator()` |
+| `Site_meteo.txt` | daily weather | `make_meteo()`, `make_meteo_EOBS()`, `make_CCS()`, `check_meteo_3DFEM()` |
+| `Site_co2.txt` | yearly atmospheric CO2 concentration | `make_co2()`, `make_CCS()` |
+| `Site_soil.txt` | soil texture and depth | `make_soil()`, `make_soil_ISRIC()` |
+| `Site_topo.txt` | elevation | `make_topo()` |
+| `Site_management.txt` | management events (only with `man = "var"`) | `make_management()` |
+| `Species.txt` | species parameterization (version 5.7) | `list_species()`, `copy_species()`, `read_species()`, `set_species_param()` |
+
+```{r dir}
+inputdir <- file.path(tempdir(), "Collelongo")
+```
+
+## Stand
+
+One row per class (species, age, DBH, height) and year. With `man = "var"` and
+`pres_dens = "on"` the rows of the following years prescribe the stand density.
+
+```{r stand}
+make_stand("Collelongo", year = 2000, age = c(90, 120), species = "Fagussylvatica",
+           n_trees = c(600, 150), avdbh = c(28, 45), height = c(22, 27), outdir = inputdir)
+```
+
+## Meteo
+
+Daily data with the columns Year, Month, n_days, Rg_f (MJ m^-2^ day^-1^), Ta_f, Tmax,
+Tmin (°C), RH_f (%), Ts_f, Precip (mm day^-1^), SWC, LAI, ET and WS_f (-9999 when not
+available). `make_meteo()` converts any daily data.frame (e.g. a weather station): it
+computes the mean temperature if missing, converts the radiation from W m^-2^
+(`rad_unit = "W"`) and checks the result with `check_meteo_3DFEM()`.
+
+```{r meteo}
+soro <- read.delim(system.file("extdata", "soro", "Soroe_meteo.txt", package = "R3DFEM"))
+station <- data.frame(date = as.Date(sprintf("%d-%02d-%02d", soro$Year, soro$Month, soro$n_days)),
+                      Rg_f = soro$Rg_f / 0.0864, Tmax = soro$Tmax, Tmin = soro$Tmin,
+                      Precip = soro$Precip, RH_f = soro$RH_f)
+station <- subset(station, date < as.Date("2031-01-01"))
+head(station, 3)
+meteo <- make_meteo(station, "Collelongo", rad_unit = "W", outdir = inputdir)
+```
+
+```{r plot-meteo, fig.height = 5}
+plot_meteo_3DFEM(file.path(inputdir, "Collelongo_meteo.txt"), var = c("Tmax", "Tmin", "Precip"),
+                 daterange = c("2000-01-01", "2002-12-31"), window = 30)
+```
+
+For European sites the weather can be extracted from
+[E-OBS](https://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php) (version 30.0 or
+29.0). The netCDF files (ensemble mean, 0.1 degrees, variables hu, qq, rr, tg, tn, tx) are
+not distributed with the package: download them and set their directory once.
+
+```{r eobs, eval = FALSE}
+options(R3DFEM.eobs_dir = "D:/EOBS")
+make_meteo_EOBS(data.frame(x = 13.59, y = 41.85), crs = 4326, site = "Collelongo",
+                daterange = c("2000-01-01", "2023-12-31"), outdir = inputdir)
+```
+
+`make_CCS()` builds a detrended "current climate scenario" by resampling the observed
+years (leap years with leap years), e.g. to run the model beyond the observations:
+
+```{r ccs}
+make_CCS(meteo = file.path(inputdir, "Collelongo_meteo.txt"), obs_year = c(2000, 2020),
+         end_year = 2100, outdir = file.path(tempdir(), "ccs"))
+```
+
+## CO2
+
+Yearly concentration (ppm). `make_co2()` accepts a constant, one value per year or known
+values interpolated linearly over the years:
+
+```{r co2}
+co2 <- make_co2("Collelongo", years = 2000:2100,
+                co2 = data.frame(year = c(2000, 2020, 2100), CO2_ppm = c(369, 412, 600)),
+                outdir = inputdir)
+co2[c(1, 21, 101), ]
+```
+
+## Soil and topography
+
+```{r soil}
+make_soil("Collelongo", lat = 41.85, lon = 13.59, clay = 25, silt = 35, sand = 40,
+          soil_depth = 100, outdir = inputdir)
+make_topo("Collelongo", elev = 1560, outdir = inputdir)
+```
+
+```{r plot-soil, fig.height = 5, eval = requireNamespace("plotrix", quietly = TRUE)}
+plot_soil_3DFEM(file.path(inputdir, "Collelongo_soil.txt"), pch = 21, bg.symbols = "red", cex = 2)
+```
+
+The texture of European sites can be taken from SoilGrids (raster not distributed with the
+package):
+
+```{r isric, eval = FALSE}
+options(R3DFEM.isric_file = "D:/SoilGrids/ISRIC.tif")
+make_soil_ISRIC(data.frame(x = 13.59, y = 41.85), crs = 4326, site = "Collelongo",
+                outdir = inputdir)
+```
+
+## Management
+
+Used with `man = "var"`: years of thinning (and their intensity, % of basal area),
+harvesting and regeneration.
+
+```{r management}
+make_management("Collelongo", thinning = c(2010, 2030), thinning_int = c(25, 20),
+                harvesting = 2060, outdir = inputdir)
+readLines(file.path(inputdir, "Collelongo_management.txt"))
+```
+
+With `man = "on"` the model manages the stand with the parameters ROTATION, THINNING and
+THINNING_INTENSITY of the species file instead.
+
+## Species parameters
+
+The package contains the parameterizations of the version 5.7 of the model. Coppice
+stands have their own files (e.g. `Fagussylvatica_coppice`).
+
+```{r species}
+list_species()
+copy_species("Fagussylvatica", inputdir)
+sp <- read_species(file.path(inputdir, "Fagussylvatica.txt"))
+nrow(sp)
+head(sp)
+```
+
+`set_species_param()` changes one or more parameters, keeping the comments and the order of
+the file, and returns the previous values (with `outfile` it writes a new file, e.g. a
+site-specific parameterization):
+
+```{r set-param}
+set_species_param(file.path(inputdir, "Fagussylvatica.txt"), LIGHT_TOL = 2, ROTATION = 140)
+```
+
+The version 5.7 needs all the parameters of these files, including `CONV_VOL_FACTOR`
+(conversion of stem biomass to volume). Files of older versions are refused by
+`check_inputs()` and `run_3DCMCCFEM()`:
+
+```{r old-file, error = TRUE}
+old <- file.path(tempdir(), "old")
+dir.create(old)
+file.copy(list.files(inputdir, full.names = TRUE), old)
+sp_lines <- readLines(file.path(old, "Fagussylvatica.txt"))
+writeLines(sp_lines[!grepl("^CONV_VOL_FACTOR", sp_lines)], file.path(old, "Fagussylvatica.txt"))
+check_inputs("Collelongo", "Fagussylvatica", 2000, 2030, man = "off", inputdir = old)
+```
+
+## Checking the inputs
+
+```{r check}
+check_inputs("Collelongo", "Fagussylvatica", year_start = 2000, year_end = 2030,
+             man = "var", pres_dens = "off", inputdir = inputdir,
+             rep_species = "Fagussylvatica", rep_trees = 3000, rep_age = 3, rep_dbh = 1,
+             rep_lai = 1, rep_height = 1.3)
+list.files(inputdir)
+```
+
+For all details on the input files see the model
+[User Guide](http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf).

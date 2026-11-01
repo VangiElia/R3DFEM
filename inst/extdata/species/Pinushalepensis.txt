@@ -1,0 +1,95 @@
+//parameterization file for Pinus halepensig (ddalmo feb.2021, for OT4CLIMA - BASILICATA) 
+LIGHT_TOL	           4  //OK 4 = very shade intolerant (cc = 90%), 3 = shade intolerant (cc = 100%), 2 = shade tolerant (cc = 110%), 1 = very shade tolerant (cc = 120%) from Poorter et al.2012
+PHENOLOGY	         1.2  //OK PHENOLOGY 0.1 = deciduous broadleaf, 0.2 = deciduous needle leaf, 1.1 = broad leaf evergreen, 1.2 = needle leaf evergreen
+ALPHA                  0.048  //NOT USED IN THE BGC Canopy quantum efficiency (molC/molPAR) for P. pinaster (LeBray site) Peltionemi et al., 2012
+EPSILONgCMJ             0.58  //NOT USED IN THE BGC Light Use Efficiency (gC/molPAR)(used if ALPHA is not available) for P. pinaster (LeBray site) Peltionemi et al., 2012
+GAMMA_LIGHT                0  // SET TO 0 for all species 0.014 // Empirical parameter for Light modifiers see 0.022 Bagnara et al., 2015 
+K                       0.27  // OK Extinction coefficient for absorption of PAR by canopy for P. halep. from Mollicone et al. 
+ALBEDO                  0.13  // OK averaged for P. halep. Amer et al.EGU 2020 abstract
+INT_COEFF                0.01 // OK precip interception coefficient for P.halep. from Mollicone et al.
+SLA_AVG0                12.8  // OK  Average Specific Leaf Area m^2/Kg (juvenile) sunlit/shaded leaves  12.8 Mollicone et al. (assumed here juvenile)
+SLA_AVG1                   5  // OK Average Specific Leaf Area m^2/Kg (mature)  4.4 from Sprintsin et al.2011 Israel Aleppo Plantations
+TSLA                      20  // Age at which SLA_AVG = (SLA_AVG1 + SLA_AVG0 )/2 same as pinus pinaster
+SLA_RATIO	        2.52  // OK (DIM) ratio of shaded to sunlit projected SLA for Pinus Halep. Mollicone et al. 
+LAI_RATIO	         2.6  // OK (DIM) all-sided to projected leaf area ratio  da Tatarinov et al.2006 (Pine macro-class)
+FRACBB0                 0.40  // OK Fraction of branch+bark over stem in young trees Alvaro-Sanchez et al. 2015 young P.halepensis . it was about 0.5 but twigs were also included. 
+FRACBB1                 0.33  // OK Fraction of branch+bark over stem in mature trees estimate from Lopes Serrano 2005, average from different sites of mature stands (50-60 y.o.)
+TBB                       10  // Age at which fracBB = (FRACBB0 + FRACBB1 )/ 2 the same of Pinus Pinaster
+RHO0                    0.46  // OK Minimum Basic Density for young Trees t/m^3 for Pinus Halep. Zanne et al. 2006 
+RHO1                    0.46  // OK Maximum Basic Density for mature Trees t/m^3 for Pinus Halep. Zanne et al.2006
+TRHO                       4  // Age at which rho = (RHO0 + RHO1 )/2
+FORM_FACTOR            0.435  // Form factor Seidl et al., 2012 for Pinus Sylvestris
+COEFFCOND               0.05  // OK Define stomatal responsee to VPD in mbar. (we kept it the same for all the specie)
+BLCOND                  0.2   // OK Canopy Boundary Layer conductance for P. halep. Mollicone et al.
+MAXCOND                0.006  // OK Maximum Stomatal Conductance in m/sec for P. halep. Mollicone et al.
+CUTCOND             0.000025 // OK Cuticul conductance in m/sec for P.Halep. Mollicone et al. ? maybe 0.0000025
+MAXAGE                   250  // OK Determines rate of "physiological decline" from 4C-Manual (as longevity,but no reference)
+RAGE                    0.95  // Relative Age to give fAGE = 0.5   (let the same as for Pinus Pinaster). From Montero et al.2011,the maximum vol.incr. would be between 70-100 years
+NAGE                       4  // Power of relative Age in function (let the same as for Pinus Pinaster)
+GROWTHTMIN	           0  // Minimum temperature for growth 
+GROWTHTMAX	          45  // Maximum temperature for growth 
+GROWTHTOPT	          22  // Optimum temperature for growth 
+GROWTHSTART              200  // average temperature for starting growth in °C  ONLY FOR DECIDUOUS
+TAU            4
+X0             -2
+Smax            9
+MINDAYLENGTH               0  // minimum day length for deciduous
+SWPOPEN                 -0.63 // OK in MPa for P. halep. Mollicone et al. 
+SWPCLOSE                -2.3  // OK in MPa for P. halep. Mollicone et al.
+OMEGA_CTEM               0.5  // ALLOCATION PARAMETER control the sensitivity of allocation to changes in water and light availability for Needlleleaf deciduous from Arora et al 2005
+S0CTEM               0.3  // 0.15 PARAMETER CONTROLLING ALLOCATION TO STEM/MINIMUM RATIO TO C TO STEM for Needleleaf deciduous from Arora et al 2005
+R0CTEM                0.4  // 0.55 PARAMETER CONTROLLING ALLOCATION TO ROOT/MINIMUM RATIO TO C TO ROOTS for Needleleaf deciduous from Arora et al 2005 
+F0CTEM               0.3  // 0.3 PARAMETER CONTROLLING ALLOCATION TO FOLIAGE/MINIMUM RATIO TO C TO STEM for Needleleaf deciduous from Arora et al 2005
+FRUIT_PERC               0.02  // fraction of NPP allocated for reproduction for P. sylvestris 0.15 from Xiao et al., 2003, 0.2 from Yuste et al., 2005, 
+CONES_LIFE_SPAN            3  // Life span for cones (yrs)
+FINE_ROOT_LEAF           0.7  // OK 1.4. allocation new fine root C:new leaf (ratio) Pinus halep. from Mollicone et al.
+STEM_LEAF               0.63  // CURRENTLY NOT USED? OK 2.2 allocation new stem C:new leaf (ratio) Pinus halep. from Mollicone et al.
+COARSE_ROOT_STEM        0.29  // OK allocation new coarse root C:new stem (ratio) 0.29 for ENF in White et al.2000 (BiomeBGC documentation) 
+LIVE_TOTAL_WOOD        0.071  // OK new live C:new total wood (ratio) for P.Aleppo Mollicone et al.
+N_RUBISCO             0.033 // OK Fraction of leaf N in Rubisco (ratio) for Pinus halep Mollicone et al. 
+CN_LEAVES                 40  // 60 OK CN of leaves (kgC/kgN) for P. halep Mollicone et al.   40 according to 4C 
+CN_FALLING_LEAVES        192  // OK CN of leaf litter (kgC/kgN) for P. halep. Mollicone et al. 
+CN_FINE_ROOTS             45  // OK CN of fine roots (kgC/kgN) for P. halep Mollicone et al.
+CN_LIVEWOOD               45  // OK CN of live woods (kgC/kgN) for P. halep Mollicone et al.
+CN_DEADWOOD             498  //  OK CN of dead woods (kgC/kgN) for P.halep. Mollicone et al. 
+LEAF_LITT_LAB_FRAC      0.26  // CURRENTLY NOT USED (soil off)
+LEAF_LITT_CEL_FRAC      0.49  // CURRENTLY NOT USED (soil off)
+LEAF_LITT_LIGN_FRAC     0.25  // CURRENTLY NOT USED (soil off) 
+FROOT_LITT_LAB_FRAC     0.23  // CURRENTLY NOT USED (soil off) 
+FROOT_LITT_CEL_FRAC     0.41  // CURRENTLY NOT USED (soil off) 
+FROOT_LITT_LIGN_FRAC    0.36  // CURRENTLY NOT USED (soil off) 
+DEADWOOD_CEL_FRAC       0.70  // CURRENTLY NOT USED (soil off) 
+DEADWOOD_LIGN_FRAC      0.30  // CURRENTLY NOT USED (soil off) 
+BUD_BURST                0.3  // days of bud burst at the beginning of growing season for P. sylvestris from Tatarinov
+LEAF_FALL_FRAC_GROWING     0  // proportions of the growing season of leaf fall (?not used if evergreen?)
+LEAF_FINEROOT_TURNOVER  0.39  // Average YEARLY leaves and fine root turnover rate (Currently not used?)  0.39 Tatarinov, Pinus macro class
+LIVEWOOD_TURNOVER        0.05  // Annual yearly livewood turnover rate (kept for all species)
+SAPWOOD_TURNOVER         0.05  // Annual yearly sapwood turnover rate  (kept for all species)
+DBHDCMAX                0.55  // CURRENTLY COMPUTED IN THE CODE Low Density for P. pinaster deducted from Delzon et al., 2004
+DBHDCMIN                0.12  // to be checked//High Density for P. pinaster Jimènez et al., 2013
+SAP_A               0.40 // 0.4 from ?   // 0.077 // Values from Fotelli et al.2019 (Aleppo pine sites in Greece)  0.32 from pinus pinaster
+SAP_B               1.84 // 1.84 from?    // 1.99  // Values from Fotelli et al.2019 (Aleppo pine sites in Greece)   1.9 from Pinus Pinaster
+SAP_LEAF         2200 //da Rosas et al.2019  1700 //    1332  // sapwood_max leaf area ratio in pipe model . 1700 from Pinus Pinaster
+SAP_WRES                0.05  // Sapwood-Reserve biomass ratio used if no Wres data are available 0.11 for deciduous 0.05 for evergreen see Schwalm and Ek, 2004 Ecological Modelling
+STEMCONST_P            0.151  // FITTING BAS. a parameter for allometric equation From calibration Basilicata; 0.06552  E. Cienciala et al., 2006 For P. sylvestris; from Yuste et al 2005 0.1227, 0.084 from Xiao and Ceulemans, 0.7 Seidl et al., 2012, 0.027 Landsberg and Sands, 0.046 Landsberg et al., 2005
+STEMPOWER_P             2.1  // FITTING BAS. b parameter for allometric equation From calibration Basilicata; 2.50626 E. Cienciala et al., 2006 For P. sylvestris; from Yuste et al 2005 2.3272, 1.985 from Xiao and Ceulemans, 3.0 Seidl et al., 2012, 2.86 Landsberg and Sands, 2.6496 Landsberg et al., 2005
+CRA                    18.17  // From calibration Basilicata (e.g. more sites within the same region)
+CRB                     0.038  //    "
+CRC                     0.9658  //    "
+HDMAX_A                148.1  // CURRENTLY NOT USED A parameter for Height (m) to Base diameter (m) ratio MAX Seidl et al., 2012
+HDMAX_B               -0.165  // CURRENTLY NOT USED B parameter for Height (m) to Base diameter (m) ratio MAX Seidl et al., 2012
+HDMIN_A                 76.3  // CURRENTLY NOT USED A parameter for Height (m) to Base diameter (m) ratio MIN Seidl et al., 2012
+HDMIN_B               -0.129  // CURRENTLY NOT USED B parameter for Height (m) to Base diameter (m) ratio MIN Seidl et al., 2012
+CROWN_FORM_FACTOR          4 //4  //Crown form factor (0 = cylinder, 1 = cone, 2 = sphere 3=ellispoide prolate 4= ellipsoide oblate)
+CROWN_A               0.65    //Crown relationship with tree height, estimate from Mitsopolous et al.2007 
+CROWN_B               1.04    //Crown relationship with tree height, estimate from Mitsopolous et al.2007
+MAXSEED                20000  // CURRENTLY NOT USED numero massimo semi prodotti dalla pianta
+MASTSEED                   5  // CURRENTLY NOT USEDricorrenza anni di pasciona
+WEIGHTSEED                 7  // peso frutto in g 
+SEXAGE                    30  // Age at Sexual Maturity 
+GERMCAPACITY            0.70  // CURRENTLY NOT USED Geminability (Lischke H. & Loffler T. J.)
+ROTATION                  200  // Basilicata.set. Forest Rotation for harvesting 
+THINNING                  1  // Thinning regime 
+THINNING_REGIME           1  // Thinning regime (0 = above, 1 = below) note: currently in the model the average tree is simulated
+THINNING_INTENSITY        1  // Thinning intensity (% of Basal Area/N-tree to remove) 
+CONV_VOL_FACTOR          0.81       // FAKE ONE conversion factor to convert stem biomass to volume (GSV)

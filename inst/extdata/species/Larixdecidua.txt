@@ -1,0 +1,96 @@
+//parameterization file for Larix_decidua tested at the ICOS Torgnon site, some par e.g.CRA,CRB,CRC, stem_p, stem_const, are given generic values (from repo)
+//   last check Jan 2025 by ddalmo. Livewood/sapwood turnover increased to 0.05
+LIGHT_TOL   3       //
+PHENOLOGY   0.2     //PHENOLOGY 0.1 = deciduous broadleaf, 0.2 = deciduous needle leaf, 1.1 = broad leaf evergreen, 1.2 = needle leaf evergreen 
+ALPHA       0.01    //Canopy quantum efficiency (molC/molPAR) 0.01 for Larix gmelinii from Still et al., 2004
+EPSILONgCMJ 0       // Light Use Efficiency  (gC/molPAR)(used if ALPHA is not available)  
+GAMMA_LIGHT 0       // Empirical parameter for Light modifiers 
+K   0.51            //Extinction coefficient for absorption of PAR by canopy for Larix d. see Piestch etal 2005
+ALBEDO     0.13     // Shuman et al.2011,Hollinger et al., 2010? da    0.095 //averaged for P. sylvestris from Breuer et al., 2003
+INT_COEFF  0.3      //precip interception coefficient
+SLA_AVG0     11.9    //Average Specific Leaf Area m^2/KgC (juvenile) sunlit/shaded leaves from Vanderklein et al 2000  
+SLA_AVG1     11.9    //Average Specific Leaf Area m^2/KgC (mature) sunlit/shaded leaves from Fellner et al., 2016
+TSLA 30             //Age at which SLA_AVG = (SLA_AVG1 + SLA_AVG0 )/2 Forrester et al., 2017
+SLA_RATIO   2       //(DIM) ratio of shaded to sunlit projected SLA for Larix d. see Piestch etal 2005
+LAI_RATIO   2.6     //(DIM) all-sided to projected leaf area ratio from Mollicone et al., 2002 
+FRACBB0  0.38        //Branch and Bark fraction at age 0 for Larix decidua deducted from Gower et al., 1993
+FRACBB1 0.18        //Branch and Bark fraction for mature stands for Larix decidua deducted from Gower et al., 1993
+TBB 10              //Age at which fracBB = (FRACBB0 + FRACBB1 )/ 2 for P. sylvestris, from Xenakis et al., 2008
+RHO0  0.502         //Minimum Basic Density for young Trees t/m^3 for P. sylvestris from Janssen et al., 1999, 0.47 from Repala, 2006
+RHO1  0.502         //Maximum Basic Density for young Trees  for P. sylvestris from Janssen et al., 1999 ,0.41 from Repala, 2006
+TRHO    4           //Age at which rho = (RHOMIN + RHOMAX )/2
+FORM_FACTOR 0.45    //Form factor Seidl et al., 2012
+COEFFCOND   0.05    //Define stomatal responsee to VPD in mbar for P. sylvestris from Landsberg et al., 2005
+BLCOND 0.09         //    0.009    //Canopy Boundary Layer conductance 0.2 for P. sylvestris from Landsberg et al., 2005, 0.09 Mollicone et al.,
+MAXCOND  0.001       // 0.006  Mollicone; 0.0022 Breuer           //Maximum Stomatal Conductance in m/sec for Larix spec Breuer
+CUTCOND 0.00006     // 0.00006 Mollicone ; 0.000022
+MAXAGE  400         // Cécile H. Albert 2007             //Determines rate of "physiological decline" of forest 100 for P. sylvestris from Zahele et al., 120 for P. sylvestris, from Xenakis et al., 2008, 2005 ,500 from Landsberg et al., 2005, 80 from Kurten et al., 
+RAGE    0.75        //Relative Age to give fAGE = 0.5 0.95 for P. sylvestris from Landsberg et al., 2005 for P. sylvestris, 0.75 from Xenakis et al., 2008
+NAGE    4           //Power of relative Age in function for Age for P. sylvestris from Landsberg et al., 2005, 
+GROWTHTMIN  -3      //Minimum temperature for growth  for Larix d. see Schaber & Badeck 2003, 0 for Larix cajanderi from Matsumoto et al., 
+GROWTHTMAX  33.7    //Maximum temperature for growth for Larix d. see Schaber & Badeck 2003, 40 for Larix cajanderi from Matsumoto et al., 
+GROWTHTOPT  18      //Optimum temperature for growth for Larix d. see Schaber & Badeck 2003, 20 for Larix cajanderi from Matsumoto et al., 
+GROWTHSTART   80 // 100 // 200     //average temperature for starting growth in °C   do we have a reference?
+TAU            4
+X0             -2
+Smax            9
+MINDAYLENGTH    12 // 0   //minimum day length for deciduous
+SWPOPEN  -0.63       //-0.63 mollicone; -0.5 //in KPa for P. sylvestris from Pietsch et al 2005
+SWPCLOSE  -2.3       //-2.3 Mollicone;   -2.2 //in KPa  for P. sylvestris from Pietsch et al 2005
+OMEGA_CTEM  0.5     //ALLOCATION PARAMETER control the sensitivity of allocation to changes in water and light availability for Needlleleaf deciduous from Arora et al 2005
+S0CTEM  0.40        //PARAMETER CONTROLLING ALLOCATION TO STEM/MINIMUM RATIO TO C TO STEM for Needleleaf deciduous from Arora et al 2005
+R0CTEM  0.30        //PARAMETER CONTROLLING ALLOCATION TO ROOT/MINIMUM RATIO TO C TO ROOTS for Needleleaf deciduous from Arora et al 2005 
+F0CTEM  0.30        //PARAMETER CONTROLLING ALLOCATION TO FOLIAGE/MINIMUM RATIO TO C TO STEM   for Needleleaf deciduous from Arora et al 2005
+FRUIT_PERC  0.05    //fraction of NPP allocated for reproduction (0 for broadleaf) for P. sylvestris 0.15 from Xiao et al., 2003, 0.2 from Yuste et al., 2005
+CONES_LIFE_SPAN   3 //Life span for cones (yr) NB: let to 1 even if the plants has no cones, because it is an evergreen
+FINE_ROOT_LEAF  1   //allocation new fine root C:new leaf (ratio) for Larix d. see Piestch etal 2005
+STEM_LEAF   2.2     //allocation new stem C:new leaf (ratio) for Larix d. see Piestch etal 2005
+COARSE_ROOT_STEM    0.23    //allocation new coarse root C:new stem (ratio)for Larix d. see Piestch etal 2005
+LIVE_TOTAL_WOOD 0.05  //new live C:new total wood (ratio) for coniferous P. Thornton pers. comm.
+N_RUBISCO   0.088  //  0.075  //0.088 Mollicone ;0.075 Fraction of leaf N in Rubisco (ratio) Piestch et al., 
+CN_LEAVES  27       //   27 Mollicone et al.2009
+CN_FALLING_LEAVES 111.9  //CN of leaf litter (kgC/kgN) for Larix d. see Piestch etal 2005
+CN_FINE_ROOTS   42    // CN of fine roots (kgC/kgN) for Larix d. see Piestch etal 2005
+CN_LIVEWOOD       42  //CN of live woods (kgC/kgN) for Larix d. see Piestch etal 2005
+CN_DEADWOOD      442  //CN of dead woods (kgC/kgN)  for Larix d. see Piestch etal 2005
+LEAF_LITT_LAB_FRAC   0.39   //leaf litter labile fraction for Larix decidua from Pietsch et al., 2005
+LEAF_LITT_CEL_FRAC   0.44      //leaf litter cellulose fraction for Larix decidua from Pietsch et al., 2005
+LEAF_LITT_LIGN_FRAC  0.17      //leaf litter lignin fraction for Larix decidua from Pietsch et al., 2005
+FROOT_LITT_LAB_FRAC  0.30      //fine root litter labile fraction for Larix decidua from Pietsch et al., 2005
+FROOT_LITT_CEL_FRAC  0.45      //fine root litter cellulose fraction for Larix decidua from Pietsch et al., 2005
+FROOT_LITT_LIGN_FRAC 0.25      //fine root litter lignin fraction for Larix decidua from Pietsch et al., 2005
+DEADWOOD_CEL_FRAC    0.76      //dead wood litter cellulose fraction for Larix decidua from Pietsch et al., 2005
+DEADWOOD_LIGN_FRAC   0.24      //dead wood litter lignin fraction for Larix decidua from Pietsch et al., 2005
+BUD_BURST   15 // 20                  //days of bud burst at the beginning of growing season (only for deciduous)
+LEAF_FALL_FRAC_GROWING  0.2     //proportions of the growing season of leaf fall 
+LEAF_FINEROOT_TURNOVER  1       // Average YEARLY fine root turnover rate  0.05 for evergreen
+LIVEWOOD_TURNOVER   0.05 //     0.01   // Annual yearly livewood turnover rate (used for coniferous specie)
+SAPWOOD_TURNOVER    0.05 //     0.01  //Annual yearly sapwood turnover rate    
+DBHDCMAX    0.24        // Low Density from P. sylvestris from Ameztegui et al., 2012 1  //CUURENTLY NOT USED
+DBHDCMIN    0.14        // High Density for P. sylvestris from Ameztegui et al., 2012 0.14
+SAP_A     0.4045 // a value for Larix d. deducted from Kolcun dissertation  
+SAP_B 2.2125  // b value for Larix d. deducted from Kolcun dissertation (we reduced the original value, 2.5)
+SAP_LEAF  3000 //3500 //  5000 in M. Scherstjanoi et al.2014 is it too much?// 1500  from Matyssek 2009, mixed forest, between 3000 and 4000      // sapwood_max leaf area ratio in pipe model for P. sylvestris from Hickler et al 2012 (1000 see also Law et al., 2001 for P. ponderosa)
+SAP_WRES   0.11        // Sapwood-Reserve biomass ratio used if no Wres data are available  0.11 decidious 0.05 evergreen
+STEMCONST_P    0.248313      // 0.248313 for Larix decidua from Gower et al 1993
+STEMPOWER_P   2.11        //  for Larix decidua from Gower et al 1993
+CRA  28.809              //for L. decidua Colleselli 1973 (Pilli et al., 2016)
+CRB  0.0277             // L. decidua Colleselli 1973 (Pilli et al., 2016)
+CRC  1.02185               //for L. decidua Colleselli 1973 (Pilli et al., 2016)
+HDMAX_A -999           //A parameter for Height (m) to Base diameter (m) ratio MAX Seidl et al., 2012
+HDMAX_B -999           //B parameter for Height (m) to Base diameter (m) ratio MAX Seidl et al., 2012
+HDMIN_A -999           //A parameter for Height (m) to Base diameter (m) ratio MIN Seidl et al., 2012
+HDMIN_B -999           //B parameter for Height (m) to Base diameter (m) ratio MIN Seidl et al., 2012
+CROWN_FORM_FACTOR 1     // Crown form factor (0 = cylinder, 1 = cone, 2 = sphere)
+CROWN_A    0.43               //Crown relationship with tree height for Pinus sylvestris from Rautianinen and Stember 2006. shall we keep it for larix?
+CROWN_B     1                 //Crown exponential with tree height (Fixed to 1 as in Sorie-ND)
+MAXSEED 20000           //numero massimo semi prodotti dalla pianta (da TREEMIG) FOR Quercus sp
+MASTSEED    5       //ricorrenza anni di pasciona (da TREEMIG) FOR Quercus sp (Bernetti)
+WEIGHTSEED  7       //peso frutto in g FOR Quercus sp (Bernetti)
+SEXAGE  30              //Age at Sexual Maturity FOR Quercus sp (per Bernetti 75)
+GERMCAPACITY    0.70    //Geminability (Lischke H. & Loffler T. J.)
+ROTATION    140         //Forest Rotation for harvesting 
+THINNING     15         //Thinning regime
+THINNING_REGIME    0    //Thinning regime (0 = above, 1 = below)
+THINNING_INTENSITY  0         //Thinning intensity (% of Basal Area/N-tree to remove)
+CONV_VOL_FACTOR          0.68       // FAKE ONE conversion factor to convert stem biomass to volume (GSV)

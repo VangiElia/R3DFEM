@@ -1,4 +1,4 @@
-﻿//Pinus sylvestris parameterization file
+//Pinus sylvestris parameterization file
 LIGHT_TOL                   4 //4 = very shade intolerant 3 = shade intolerant 2 = shade tolerant 1 = very shade tolerant
 PHENOLOGY                 1.2 //PHENOLOGY 0.1 = deciduous broadleaf, 0.2 = deciduous needle leaf, 1.1 = broad leaf evergreen, 1.2 = needle leaf evergreen 
 ALPHA                   0.055 //Canopy quantum efficiency (molC/molPAR) for P. sylvestris Landsberg et al., 2005, 0.0545 Makela et al., 2006, 0.05 Xenakis et al., 2007, 0.051 Peltionemi et al., 2012, 0.049 Forrester et al., 2017
@@ -92,3 +92,4 @@ ROTATION                  140 //Forest Rotation for harvesting for P. sylvestris
 THINNING                   15 //Thinning regime for P. sylvestris ISIMIP protocol for P. sylvestris ISIMIP protocol
 THINNING_REGIME             1 //Thinning regime (0 = above, 1 = below) for P. sylvestris ISIMIP protocol
 THINNING_INTENSITY         20 //Thinning intensity (% of Basal Area/N-tree to remove) for P. sylvestris ISIMIP protocol
+CONV_VOL_FACTOR          0.625       // FAKE ONE conversion factor to convert stem biomass to volume (GSV)
