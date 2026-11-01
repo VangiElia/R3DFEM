@@ -14,7 +14,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/VangiElia/R3DFEM/blob/model-5.7/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/VangiElia/R3DFEM/blob/main/DESCRIPTION)
 
 Vangi E (2026). *R3DFEM: R Wrapper for the 3D-CMCC-FEM Forest Model
 (Version 5.7)*. R package version 0.2.0,

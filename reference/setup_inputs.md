@@ -83,10 +83,10 @@ setup_inputs("Collelongo", inp,
              meteo = system.file("extdata", "soro", "Soroe_meteo.txt", package = "R3DFEM"),
              co2 = list(years = 1997:2099, co2 = 380))
 #> Outdir does not exist. It will be created
-#> file /tmp/RtmpFzSWWq/Collelongo/Collelongo_stand.txt saved
-#> file /tmp/RtmpFzSWWq/Collelongo/Collelongo_soil.txt saved
-#> file /tmp/RtmpFzSWWq/Collelongo/Collelongo_topo.txt saved
-#> file /tmp/RtmpFzSWWq/Collelongo/Collelongo_co2.txt saved
+#> file /tmp/RtmpAbJ0j7/Collelongo/Collelongo_stand.txt saved
+#> file /tmp/RtmpAbJ0j7/Collelongo/Collelongo_soil.txt saved
+#> file /tmp/RtmpAbJ0j7/Collelongo/Collelongo_topo.txt saved
+#> file /tmp/RtmpAbJ0j7/Collelongo/Collelongo_co2.txt saved
 list.files(inp)
 #> [1] "Collelongo_co2.txt"   "Collelongo_meteo.txt" "Collelongo_soil.txt" 
 #> [4] "Collelongo_stand.txt" "Collelongo_topo.txt"  "Fagussylvatica.txt"  

@@ -39,7 +39,7 @@ prescribe the stand density.
 make_stand("Collelongo", year = 2000, age = c(90, 120), species = "Fagussylvatica",
            n_trees = c(600, 150), avdbh = c(28, 45), height = c(22, 27), outdir = inputdir)
 #> Outdir does not exist. It will be created
-#> file /tmp/RtmpPy0Xyv/Collelongo/Collelongo_stand.txt saved
+#> file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_stand.txt saved
 ```
 
 ## Meteo
@@ -81,7 +81,7 @@ meteo <- make_meteo(station, "Collelongo", rad_unit = "W", outdir = inputdir)
 #> Warning in check_meteo_3DFEM(meteo, correct = FALSE, impute = FALSE, save =
 #> FALSE): There are 40 row(s) in which precipitation is less than the precision
 #> of the model!
-#> file /tmp/RtmpPy0Xyv/Collelongo/Collelongo_meteo.txt saved
+#> file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_meteo.txt saved
 ```
 
 ``` r
@@ -115,7 +115,7 @@ observations:
 make_CCS(meteo = file.path(inputdir, "Collelongo_meteo.txt"), obs_year = c(2000, 2020),
          end_year = 2100, outdir = file.path(tempdir(), "ccs"))
 #> Outdir does not exist. It will be created
-#> /tmp/RtmpPy0Xyv/ccs/Collelongo_meteo.txt saved!
+#> /tmp/Rtmp6RTMCO/ccs/Collelongo_meteo.txt saved!
 ```
 
 ## CO2
@@ -130,7 +130,7 @@ linearly over the years:
 co2 <- make_co2("Collelongo", years = 2000:2100,
                 co2 = data.frame(year = c(2000, 2020, 2100), CO2_ppm = c(369, 412, 600)),
                 outdir = inputdir)
-#> file /tmp/RtmpPy0Xyv/Collelongo/Collelongo_co2.txt saved
+#> file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_co2.txt saved
 co2[c(1, 21, 101), ]
 #>     year CO2_ppm
 #> 1   2000     369
@@ -144,9 +144,9 @@ co2[c(1, 21, 101), ]
 
 make_soil("Collelongo", lat = 41.85, lon = 13.59, clay = 25, silt = 35, sand = 40,
           soil_depth = 100, outdir = inputdir)
-#> file /tmp/RtmpPy0Xyv/Collelongo/Collelongo_soil.txt saved
+#> file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_soil.txt saved
 make_topo("Collelongo", elev = 1560, outdir = inputdir)
-#> file /tmp/RtmpPy0Xyv/Collelongo/Collelongo_topo.txt saved
+#> file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_topo.txt saved
 ```
 
 ``` r
@@ -175,7 +175,7 @@ basal area), harvesting and regeneration.
 
 make_management("Collelongo", thinning = c(2010, 2030), thinning_int = c(25, 20),
                 harvesting = 2060, outdir = inputdir)
-#> file /tmp/RtmpPy0Xyv/Collelongo/Collelongo_management.txt saved
+#> file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_management.txt saved
 readLines(file.path(inputdir, "Collelongo_management.txt"))
 #> [1] "Thinning,2010,2030" "Thinning_int,25,20" "Harvesting,2060"
 ```
