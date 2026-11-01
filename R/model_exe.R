@@ -51,9 +51,21 @@ install_model <- function(source = .model_url(), dir = .model_dir(), overwrite =
   } else if (grepl("^https?://", source)) {
     tmp <- tempfile(fileext = ".exe")
     on.exit(unlink(tmp), add = TRUE)
-    status <- tryCatch(utils::download.file(source, tmp, mode = "wb", quiet = TRUE),
-                       error = function(e) e)
-    if (inherits(status, "error") || !identical(as.integer(status), 0L) || file.size(tmp) < 1e5) {
+    download <- function(...) {
+      tryCatch(suppressWarnings(utils::download.file(source, tmp, mode = "wb", quiet = TRUE, ...)),
+               error = function(e) e)
+    }
+    failed <- function(status) {
+      inherits(status, "error") || !identical(as.integer(status), 0L) ||
+        !file.exists(tmp) || file.size(tmp) < 1e5
+    }
+    status <- download()
+    # on some networks Windows cannot reach the certificate revocation server
+    # (SSL connect error): retry with curl.exe, checking revocation when possible
+    if (failed(status) && .Platform$OS.type == "windows" && nzchar(Sys.which("curl"))) {
+      status <- download(method = "curl", extra = "-L --ssl-revoke-best-effort")
+    }
+    if (failed(status)) {
       stop("Unable to download the model from ", source,
            if (inherits(status, "error")) paste0(" (", conditionMessage(status), ")"),
            ".\nDownload it manually and use install_model('path/to/the/executable').")
