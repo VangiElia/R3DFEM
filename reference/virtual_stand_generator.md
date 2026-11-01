@@ -1,0 +1,167 @@
+# Create stand file for virtual forest stand based on the 3D-CMCC_FEM model simulation
+
+`virtual_stand_generator` launches the `run_3DCMCCFEM` function to
+simulate the development of the forest over time. One or more stand
+files corresponding to the age classes specified by the user with the
+`stand_age` parameter are generated from the simulation output.
+
+## Usage
+
+``` r
+virtual_stand_generator(
+  site = NULL,
+  species = NULL,
+  stand_age,
+  co2 = "on",
+  man = NULL,
+  pres_dens = NULL,
+  after_pres = NULL,
+  reg = "off",
+  year_start_man = -9999,
+  rep_trees = -9999,
+  rep_age = -9999,
+  rep_dbh = -9999,
+  rep_lai = -9999,
+  rep_height = -9999,
+  rep_species = -9999,
+  reg_trees = -9999,
+  reg_age = -9999,
+  reg_dbh = -9999,
+  reg_lai = -9999,
+  reg_height = -9999,
+  co2_conc = 368.865,
+  frac_maxasw = 1,
+  cell = 100,
+  pruning = "off",
+  irrigation = "off",
+  inputdir = NULL,
+  outputdir = NULL
+)
+```
+
+## Arguments
+
+- site:
+
+  Character: Site name. Used to construct output name
+
+- species:
+
+  Character: Species names (same as parameterization files)
+
+- stand_age:
+
+  Numeric vector: age of the output virtual stands
+
+- co2:
+
+  Character: CO2 concentration changes according to scenario; options:
+  c("on","off","var")
+
+- man:
+
+  Character: Management options; options: c("on","off","var")
+
+- pres_dens:
+
+  Character: Prescribed densities in stand file if man = "var"; options:
+  c("on","off")
+
+- after_pres:
+
+  Character: Management after last year of prescribed density if man =
+  "var"; options: c("on","off")
+
+- reg:
+
+  Character: Regeneration; options: c("on","off")
+
+- year_start_man:
+
+  Integer: If man = "on"; Starting year of management; Default to -9999.
+
+- rep_trees, rep_age, rep_dbh, rep_lai, rep_height, rep_species:
+
+  Replanting parameters (number of trees, age, average DBH, LAI, height
+  and species). Default to -9999.
+
+- reg_trees:
+
+  Integer: Number of saplings; Default to -9999.
+
+- reg_age:
+
+  Integer: Age of saplings; Default to -9999.
+
+- reg_dbh:
+
+  Integer: Average DBH of saplings; Default to -9999.
+
+- reg_lai:
+
+  Integer: Average LAI of saplings; Default to -9999.
+
+- reg_height:
+
+  Integer: Average height of saplings; Default to -9999.
+
+- co2_conc:
+
+  Numeric: Concentration of CO2 if co2 = "off"; Default to 368.865
+
+- frac_maxasw:
+
+  Numeric: Percentage of water content in soil compared to maximum at
+  the beginning of simulation (1 = 100%); Default to 1
+
+- cell:
+
+  Numeric: Size of the cell; Default to 100 (1 ha)
+
+- pruning:
+
+  Character: Do pruning be performed? options: c("on","off"); Default to
+  "off"
+
+- irrigation:
+
+  Character: Do irrigation be performed? options: c("on","off"); Default
+  to "off"
+
+- inputdir:
+
+  Character: Path to input files directory
+
+- outputdir:
+
+  Character: Path to output files directory. If it is not named
+  'output', a subdirectory 'output' is created.
+
+## Value
+
+Used for its side effects. It saves in `outputdir/virtual_stand` a
+site_age_stand.txt file with stand charateristics and returns invisibly
+the virtual stands. For all details of the stand file please refer to
+the [User's
+Guide](http://eprints.bice.rm.cnr.it/22393/1/3D-CMCC-FEM_User_Guide_v.2_July_2023.pdf)
+
+## Details
+
+As the `run_3DCMCCFEM` function, the `virtual_stand_generator` function
+need at least 6 input .txt files, that must be in the same directory and
+should be named according to the name of the site or the species:
+"site_stand.txt", "site_soil.txt", "site_topo.txt", "site_meteo.txt",
+"site_co2.txt", "species.txt". A "site_management.txt" file must be
+provided if required. Usually meteo and co2 files are de-trended climate
+data make with the `make_CCS` function. The simulation starts from the
+first year of the stand file and ends with the last year of the meteo
+file. If the stand age of the virtual stand is not present in the
+simulation, a warning is throw and the user need to set the appropriate
+replanting parameters (man=on; year_start_man and all rep\_\*
+arguments). See the model specification for the correct use of
+replanting. This function can be used to create stand files for forest
+age classes for which there are no data.
+
+## See also
+
+`run_3DCMCCFEM`
