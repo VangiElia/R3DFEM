@@ -4,13 +4,10 @@
 .Ruserdata
 
 # heavy data not stored on GitHub (E-OBS climate data and SoilGrids raster):
-# make_meteo_EOBS*() and make_soil_ISRIC() need them in inst/extdata
+# (read by make_meteo_EOBS() and make_soil_ISRIC() from options R3DFEM.eobs_dir and R3DFEM.isric_file)
 inst/extdata/*.nc
 inst/extdata/ISRIC.tif
 inst/extdata/ISRIC.tif.aux.xml
-
-# local test files of the model executables
-inst/extdata/Debug/*.txt
 
 # local material not part of the package
 R3DFEM.git/
@@ -33,3 +30,6 @@ README.txt
 doc
 Meta
 inst/doc
+
+# pkgdown site (built by GitHub Actions)
+docs/

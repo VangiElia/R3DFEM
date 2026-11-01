@@ -1,7 +1,6 @@
 ---
 title: "Getting started with R3DFEM"
 author: "Elia Vangi"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting started with R3DFEM}
@@ -9,230 +8,241 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
-# the model executables are compiled for Windows: simulations are run only there
-run_model <- identical(.Platform$OS.type, "windows")
-```
+<!-- This vignette is precomputed, because it needs the model executable.
+     Edit R3DFEM.Rmd.orig and run vignettes/precompute.R to update R3DFEM.Rmd -->
 
-R3DFEM is an R wrapper of the [3D-CMCC-FEM](https://www.forest-modelling-lab.com/the-3d-cmcc-model),
-a bio-geochemical, process-based forest model that simulates carbon, water and nitrogen
-fluxes and stocks of homogeneous and heterogeneous forests. The package provides
-functions to:
 
-1. create and check the input files of the model;
-2. run the model (versions 5.6 and 5.7) from R;
-3. plot inputs and outputs.
 
-This vignette walks through the whole workflow using the example data shipped with the
-package.
+R3DFEM is an R interface to the version 5.7 of the
+[3D-CMCC-FEM](https://www.forest-modelling-lab.com/the-3d-cmcc-model), a
+bio-geochemical, process-based forest model that simulates carbon, water and nitrogen
+fluxes and stocks of homogeneous and heterogeneous forests. This vignette shows the
+whole workflow: install the model, prepare the inputs, run one or many simulations, read
+and plot the outputs. The creation of the input files is described in detail in
+`vignette("input-files")`.
 
-```{r load}
+
+```r
 library(R3DFEM)
 ```
 
-The package can be installed from GitHub with
-`devtools::install_github("VangiElia/R3DFEM")`. Due to storage limits, the E-OBS climate
-data and the SoilGrids raster used by `make_meteo_EOBS_30.0()`, `make_meteo_EOBS()` and
-`make_soil_ISRIC()` are not stored on GitHub: these functions work only if the files are
-copied in the `extdata` folder of the installed package.
+## Installing the model
 
-## Input files
+The package does not contain the model executable. `install_model()` downloads the
+Windows build of the version 5.7 once, in a user directory; an executable already on
+disk can be installed with `install_model("path/to/3D_CMCC_Forest_Model_5.7.exe")` or
+used directly with `options(R3DFEM.exe = "path/to/executable")` (e.g. a binary compiled
+on Linux from the [source code](https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM)).
 
-A simulation needs the following .txt files, all stored in the same directory and named
-after the site (here `BilyKriz`) or the species:
 
-| File | Content | Helper |
-|---|---|---|
-| `site_stand.txt` | initial stand: species, age, number of trees, DBH, height per class | `make_stand()` |
-| `site_meteo.txt` | daily weather | `make_meteo()`, `make_meteo_EOBS_30.0()` |
-| `site_co2.txt` | yearly atmospheric CO2 concentration | `make_co2()`, `make_CCS()` |
-| `site_soil.txt` | soil texture and depth | `make_soil()`, `make_soil_ISRIC()` |
-| `site_topo.txt` | elevation | `make_topo()` |
-| `site_management.txt` | management events (only with `man = "var"`) | `make_management()` |
-| `Species.txt` | species parameterization | `read_species()`, `set_species_param()` |
+```r
+install_model()
+```
 
-The package contains complete input sets for three sites (Bily Kriz, Hyytiälä and Sorø):
 
-```{r example-data}
+```r
+model_available()
+#> [1] TRUE
+```
+
+## Inputs
+
+A simulation needs a directory with the stand, meteo, CO2, soil and topography files
+of the site and the parameterization of the species. The package contains complete
+input sets for three sites and the parameterizations of the version 5.7 for
+19 species:
+
+
+```r
 bk <- system.file("extdata", "bilykriz", "rcp0p0", package = "R3DFEM")
 list.files(bk)
+#> [1] "BilyKriz_co2.txt"   "BilyKriz_meteo.txt" "BilyKriz_soil.txt" 
+#> [4] "BilyKriz_stand.txt" "BilyKriz_topo.txt"  "Piceaabies.txt"
+list_species()
+#>  [1] "Abiesalba"              "Betulapubescens"        "Castaneasativa"        
+#>  [4] "Castaneasativa_coppice" "Fagussylvatica"         "Fagussylvatica_coppice"
+#>  [7] "Larixdecidua"           "Piceaabies"             "Pinushalepensis"       
+#> [10] "Pinuslaricio"           "Pinuspinaster"          "Pinuspinea"            
+#> [13] "Pinussylvestris"        "Quercuscerris"          "Quercuscerris_coppice" 
+#> [16] "Quercusilex"            "Quercusilex_coppice"    "Quercuspubescens"      
+#> [19] "Quercusrobur"
 ```
 
-### Creating the input files
+`setup_inputs()` prepares an input directory in one call, from files, values or
+arguments of the `make_*()` helpers, and copies the species files. Here we start a new
+site from the Bily Kriz weather, with a stand of two cohorts of Norway spruce:
 
-All the helpers write the file in `outdir` and return the data invisibly. Here we build a
-new input set for Bily Kriz in a temporary directory.
 
-```{r inputs}
-inputdir <- file.path(tempdir(), "BilyKriz")
-
-# stand: two cohorts of Norway spruce in 1997
-make_stand("BilyKriz", year = 1997, age = c(16, 30), species = "Piceaabies",
-           n_trees = c(2000, 300), avdbh = c(7.1, 18), height = c(5.6, 14),
-           outdir = inputdir)
-
-# soil, topography
-make_soil("BilyKriz", lat = 49.3, lon = 18.32, clay = 20.63, silt = 20.63,
-          sand = 58.74, soil_depth = 80, outdir = inputdir)
-make_topo("BilyKriz", elev = 875, outdir = inputdir)
-
-# CO2: known values linearly interpolated over the simulated years
-make_co2("BilyKriz", years = 1997:2030,
-         co2 = data.frame(year = c(1997, 2020, 2030), CO2_ppm = c(363, 412, 435)),
-         outdir = inputdir)
-
-# management (used with man = "var"): thinning and final harvest
-make_management("BilyKriz", thinning = c(2005, 2015), thinning_int = c(20, 20),
-                harvesting = 2025, outdir = inputdir)
+```r
+inputdir <- file.path(tempdir(), "spruce")
+files <- setup_inputs("Spruce", inputdir,
+                      stand = list(year = 1997, age = c(16, 30), species = "Piceaabies",
+                                   n_trees = c(2000, 300), avdbh = c(7.1, 18), height = c(5.6, 14)),
+                      soil = list(lat = 49.3, lon = 18.32, clay = 20.6, silt = 20.6,
+                                  sand = 58.8, soil_depth = 80),
+                      topo = 875,
+                      meteo = file.path(bk, "BilyKriz_meteo.txt"),
+                      co2 = file.path(bk, "BilyKriz_co2.txt"),
+                      management = list(thinning = c(2005, 2015), thinning_int = c(20, 20),
+                                        harvesting = 2025))
+basename(files)
+#> [1] "Spruce_stand.txt"      "Spruce_soil.txt"       "Spruce_topo.txt"      
+#> [4] "Spruce_meteo.txt"      "Spruce_co2.txt"        "Spruce_management.txt"
+#> [7] "Piceaabies.txt"
 ```
 
-The meteo file can be created from any daily data.frame (e.g. a weather station) with
-`make_meteo()`, which computes the mean temperature if missing, converts the radiation
-from W m^-2^ to MJ m^-2^ day^-1^ (`rad_unit = "W"`) and checks the result with
-`check_meteo_3DFEM()`:
+`check_inputs()` performs the checks of `run_3DCMCCFEM()` without running the model, for
+example the harvest of 2025 requires the replanting arguments:
 
-```{r meteo}
-station <- read.delim(file.path(bk, "BilyKriz_meteo.txt"))
-station <- subset(station, Year <= 2030)
-station <- data.frame(date = as.Date(sprintf("%d-%02d-%02d", station$Year, station$Month, station$n_days)),
-                      Rg_f = station$Rg_f, Tmax = station$Tmax, Tmin = station$Tmin,
-                      Precip = station$Precip, RH_f = station$RH_f, WS_f = station$WS_f)
-head(station, 3)
-meteo <- make_meteo(station, "BilyKriz", rad_unit = "MJ", outdir = inputdir)
-```
 
-For European sites, the weather and the soil texture can be taken from E-OBS and
-SoilGrids (data not distributed on GitHub):
-
-```{r eobs, eval = FALSE}
-plot <- data.frame(x = 18.32, y = 49.3)
-make_meteo_EOBS_30.0(plot, crs = 4326, daterange = c("1997-01-01", "2023-12-31"),
-                     site = "BilyKriz", outdir = inputdir)
-make_soil_ISRIC(plot, crs = 4326, site = "BilyKriz", outdir = inputdir)
-```
-
-### Species parameters
-
-The species file is copied from the example data. The version 5.7 of the model needs the
-parameter `CONV_VOL_FACTOR`, so we use the 5.7 parameterization of Norway spruce in
-`extdata/species_5.7` (the species files in the site folders are parameterized for the
-version 5.6). `read_species()` reads the parameters, while `set_species_param()` changes
-them keeping comments and order of the file (it can also write a new file with
-`outfile`):
-
-```{r species}
-sp57 <- system.file("extdata", "species_5.7", package = "R3DFEM")
-file.copy(file.path(sp57, "Piceaabies.txt"), inputdir)
-sp <- read_species(file.path(inputdir, "Piceaabies.txt"))
-head(sp)
-old <- set_species_param(file.path(inputdir, "Piceaabies.txt"), LIGHT_TOL = 4)
-old
-```
-
-### Checking the inputs
-
-`check_inputs()` performs the same consistency checks of the run functions (files,
-years, management and replanting options) without running the model:
-
-```{r check}
-check_inputs("BilyKriz", "Piceaabies", year_start = 1997, year_end = 2030,
-             man = "off", inputdir = inputdir, version = "5.7")
-```
-
-For example, with `man = "var"` the harvest of 2025 requires the replanting arguments:
-
-```{r check-error, error = TRUE}
-check_inputs("BilyKriz", "Piceaabies", year_start = 1997, year_end = 2030,
-             man = "var", pres_dens = "on", after_pres = "on", inputdir = inputdir)
-```
-
-With a 5.6 species file (without `CONV_VOL_FACTOR`) the same check stops with an error,
-before running the model:
-
-```{r check-version, error = TRUE}
-old_sp <- file.path(tempdir(), "sp56")
-dir.create(old_sp)
-file.copy(list.files(inputdir, full.names = TRUE), old_sp)
-file.copy(file.path(bk, "Piceaabies.txt"), old_sp, overwrite = TRUE)
-check_inputs("BilyKriz", "Piceaabies", year_start = 1997, year_end = 2030,
-             man = "off", inputdir = old_sp, version = "5.7")
+```r
+check_inputs("Spruce", "Piceaabies", year_start = 1997, year_end = 2040,
+             man = "var", pres_dens = "off", inputdir = inputdir)
+#> Error in .check_run_inputs(site = site, species = species, year_start = year_start, : 
+#> 'man' = var and harvesting year ('Harvesting') is reached: 
+#> * Replanting arguments are missing, with no default.
 ```
 
 ## Running the model
 
-`run_3DCMCCFEM()` runs the 5.6 executable, `run_3DCMCCFEM_5.7()` the 5.7 one (which adds
-options like `cold_accl`, `n_reg`, `thinning_regime`, the replanting of more species and a
-separate output of the management); both have the same main arguments. The settings file
-is written in `inputdir`; the outputs are saved in `outputdir` (a sub-directory `output`
-is created if needed) and their paths are returned invisibly. Note that the model cannot
-write files whose full path is longer than 260 characters: use short output directories.
+`run_3DCMCCFEM()` writes the settings file in `inputdir`, runs the model and returns the
+paths of the outputs, named by type. The model cannot write files whose full path is
+longer than 260 characters: use short output directories.
 
-```{r run, eval = run_model}
-outdir <- file.path(tempdir(), "sim")
 
-# no management
-out_off <- run_3DCMCCFEM_5.7(site = "BilyKriz", species = "Piceaabies",
-                             year_start = 1997, year_end = 2030, man = "off",
-                             output = "annual", inputdir = inputdir,
-                             outputdir = file.path(outdir, "off"))
-basename(out_off)
+```r
+out <- "C:/r3dfem_vignette"
 
-# management from site_management.txt, with replanting after the harvest
-out_var <- run_3DCMCCFEM_5.7(site = "BilyKriz", species = "Piceaabies",
-                             year_start = 1997, year_end = 2030,
-                             man = "var", pres_dens = "on", after_pres = "on",
-                             rep_species = "Piceaabies", rep_trees = 2000, rep_age = 3,
-                             rep_dbh = 1, rep_lai = 1, rep_height = 1.3,
-                             output = "annual", inputdir = inputdir,
-                             outputdir = file.path(outdir, "var"))
+off <- run_3DCMCCFEM(site = "Spruce", species = "Piceaabies",
+                     year_start = 1997, year_end = 2040, man = "off",
+                     output = "annual", inputdir = inputdir,
+                     outputdir = file.path(out, "off"))
+
+var <- run_3DCMCCFEM(site = "Spruce", species = "Piceaabies",
+                     year_start = 1997, year_end = 2040,
+                     man = "var", pres_dens = "off",
+                     rep_species = "Piceaabies", rep_trees = 2000, rep_age = 3,
+                     rep_dbh = 1, rep_lai = 1, rep_height = 1.3,
+                     output = "annual", inputdir = inputdir,
+                     outputdir = file.path(out, "var"))
+basename(var)
+#> [1] "annual_Spruce_co2_on_man_var_pres_dens_off_reg_off_1997-2040.txt"    
+#> [2] "annual_man_Spruce_co2_on_man_var_pres_dens_off_reg_off_1997-2040.txt"
+```
+
+`read_output()` reads an output as a data.frame (one row per year, layer and class):
+
+
+```r
+a <- read_output(var[["annual"]])
+a[a$YEAR %in% c(2004:2006, 2024:2026), c("YEAR", "LAYER", "AGE", "LIVETREE", "DBH", "HEIGHT", "NPP")]
+#>    YEAR LAYER AGE LIVETREE      DBH   HEIGHT      NPP
+#> 15 2004     1  37      285 21.00430 20.71210 374.1735
+#> 16 2004     0  23     1867  8.71908  8.64211 323.5464
+#> 17 2005     1  38      226 21.35320 20.98060 260.7584
+#> 18 2005     0  24     1480  8.93949  8.88881 283.8713
+#> 19 2006     1  39      224 21.66810 21.21920 224.4143
+#> 20 2006     0  25     1466  9.12064  9.09159 241.5253
+#> 55 2024     1  57      156 27.51520 25.02790 266.6800
+#> 56 2024     0  43      987 12.37940 12.68120 309.6152
+#> 57 2025     0   4     1980  1.21380  1.62773  19.4864
+#> 58 2026     0   5     1961  1.42490  1.73109  27.0734
 ```
 
 ## Plotting
 
-`plot_output_3DFEM()` plots one or more output variables (with an optional rolling mean),
-or one variable against another:
+`plot_output_3DFEM()` plots one or more variables (optionally with a rolling mean) or a
+variable against another:
 
-```{r plot-output, eval = run_model, fig.height = 5}
-plot_output_3DFEM(out_var[1], y = c("GPP", "NPP", "LIVETREE", "DBH"), text_size = 14)
-plot_output_3DFEM(out_off[1], y = "GPP", window = 5, text_size = 14)
+
+```r
+plot_output_3DFEM(var[["annual"]], y = c("GPP", "NPP", "LIVETREE", "DBH"), text_size = 14)
+#> Warning in melt.data.table(df, id.vars = c(x.axis, id.var)): 'measure.vars'
+#> [GPP, NPP, LIVETREE, DBH, ...] are not all of the same type. By order of
+#> hierarchy, the molten data value column will be of type 'double'. All measure
+#> variables not of type 'double' will be coerced too. Check DETAILS in
+#> ?melt.data.table for more on coercion.
 ```
 
-Input files can be plotted too:
+![plot of chunk plot-output](figures/plot-output-1.png)
 
-```{r plot-inputs, fig.height = 5, eval = requireNamespace("plotrix", quietly = TRUE)}
-plot_meteo_3DFEM(file.path(inputdir, "BilyKriz_meteo.txt"),
-                 var = c("Tmax", "Tmin", "Precip"),
-                 daterange = c("2000-01-01", "2002-12-31"), window = 30)
-plot_soil_3DFEM(file.path(inputdir, "BilyKriz_soil.txt"), pch = 21, bg.symbols = "red", cex = 2)
+## Many simulations
+
+`run_batch()` runs a set of simulations, one per row of a data.frame, each in its own
+directory with a copy of the inputs. The columns are arguments of `run_3DCMCCFEM()` (or
+parameters of the species file, see below); `inputdir` can change from run to run. With
+`parallel = TRUE` the simulations are run with the future plan set by the user:
+
+
+```r
+sites <- system.file("extdata", c("bilykriz/rcp0p0", "hyytiala", "soro"), package = "R3DFEM")
+runs <- data.frame(id = c("bilykriz", "hyytiala", "soroe"),
+                   site = c("BilyKriz", "Hyytiala", "Soroe"),
+                   species = c("Piceaabies", "Pinussylvestris", "Fagussylvatica"),
+                   inputdir = sites)
+
+future::plan("multisession", workers = 3)
+res <- run_batch(runs, outputdir = file.path(out, "sites"), year_start = 1997,
+                 year_end = 2050, man = "off", output = "annual", parallel = TRUE)
+future::plan("sequential")
+res[, c("id", "status")]
+#>         id status
+#> 1 bilykriz     ok
+#> 2 hyytiala     ok
+#> 3    soroe     ok
 ```
 
-## Climate scenarios and virtual stands
+The outputs of all the runs can be read together:
 
-`make_CCS()` creates a detrended "current climate scenario" by resampling the observed
-years (leap years with leap years) up to `end_year`:
 
-```{r ccs}
-make_CCS(meteo = file.path(inputdir, "BilyKriz_meteo.txt"),
-         co2 = file.path(inputdir, "BilyKriz_co2.txt"),
-         obs_year = c(1997, 2020), end_year = 2100,
-         outdir = file.path(tempdir(), "ccs"))
+```r
+all <- read_output(res$output)
+all$site <- basename(dirname(dirname(all$file)))
+ggplot2::ggplot(all, ggplot2::aes(YEAR, NPP, colour = site)) +
+  ggplot2::geom_line() +
+  ggplot2::theme_classic()
 ```
+
+![plot of chunk batch-plot](figures/batch-plot-1.png)
+
+Columns named as species parameters change the parameterization of each run.
+`param_sensitivity()` uses this to show the effect of a parameter:
+
+
+```r
+s <- param_sensitivity("LIGHT_TOL", value = 1:4, variable = c("GPP", "HEIGHT"),
+                       inputdir = bk, outputdir = file.path(out, "sens"),
+                       site = "BilyKriz", species = "Piceaabies",
+                       year_start = 1997, year_end = 2050, man = "off")
+s$plot
+```
+
+![plot of chunk sensitivity](figures/sensitivity-1.png)
+
+## Virtual stands
 
 `virtual_stand_generator()` simulates the stand development and writes stand files for
-age classes that are not observed, which can be used as starting points of new
-simulations:
+age classes that are not observed, to be used as starting points of new simulations:
 
-```{r virtual, eval = FALSE}
-virtual_stand_generator(site = "BilyKriz", species = "Piceaabies",
-                        stand_age = c(40, 60), man = "off",
-                        inputdir = inputdir, outputdir = file.path(tempdir(), "virtual"))
+
+```r
+vdir <- file.path(tempdir(), "bk")
+dir.create(vdir)
+invisible(file.copy(list.files(bk, full.names = TRUE), vdir))
+vs <- virtual_stand_generator(site = "BilyKriz", species = "Piceaabies", stand_age = c(40, 60),
+                              man = "off", inputdir = vdir, outputdir = file.path(out, "virtual"))
+vs[, c("Age", "Species", "N", "AvDBH", "Height")]
+#>   Age    Species    N   AvDBH  Height
+#> 1  40 Piceaabies 1884 12.9227 13.2593
+#> 2  60 Piceaabies 1533 15.5468 15.9295
 ```
+
+
 
 ## References
 
-R3DFEM: an R package for running the 3D-CMCC-FEM model. *Earth Science Informatics*
-(2025). <https://link.springer.com/article/10.1007/s12145-025-01956-0>
+R3DFEM: an R package for running the 3D-CMCC-FEM model.
+*Earth Science Informatics* (2025). <https://link.springer.com/article/10.1007/s12145-025-01956-0>
 
-The model User Guide, with the full description of inputs and outputs, is available on the
-[Forest Modelling Lab web page](https://www.forest-modelling-lab.com/the-3d-cmcc-model).
+The model User Guide, with the full description of inputs and outputs, is available on
+the [Forest Modelling Lab web page](https://www.forest-modelling-lab.com/the-3d-cmcc-model).

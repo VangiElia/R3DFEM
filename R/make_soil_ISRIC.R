@@ -17,6 +17,10 @@
 #' @param outdir Character: path to the output directory.
 #' @param return_df Logical: should the climate data be returned by the function
 #'   as a data.frame? Default to FALSE
+#' @param isric_file Character: path of the SoilGrids raster (ISRIC.tif, not
+#'   distributed with the package). Default to the option
+#'   \code{R3DFEM.isric_file} or, if not set, to the extdata directory of the
+#'   installed package.
 #'
 #' @details This function compute the mean percentage of sand, silt and
 #'   clay in the first meter of soil, weighted by the thickness of the
@@ -44,7 +48,8 @@
 #' @seealso \code{\link{make_soil}}, \code{\link{run_3DCMCCFEM}}
 #' @export
 
-make_soil_ISRIC <- function(plot,crs=NULL,buffer=100,id=NULL,site=NULL,outdir=NULL,return_df=FALSE){
+make_soil_ISRIC <- function(plot,crs=NULL,buffer=100,id=NULL,site=NULL,outdir=NULL,return_df=FALSE,
+                            isric_file=getOption("R3DFEM.isric_file", system.file("extdata", "ISRIC.tif", package = "R3DFEM"))){
 
   check_dir(outdir)
   stopifnot(
@@ -77,7 +82,10 @@ make_soil_ISRIC <- function(plot,crs=NULL,buffer=100,id=NULL,site=NULL,outdir=NU
   plot <- sf::st_transform(plot,4326)
   latlon <- as.data.frame(sf::st_coordinates(plot))
   plot <- sf::st_buffer(plot,buffer)
-  rst <- terra::rast(system.file("extdata/ISRIC.tif",package = "R3DFEM"))
+  if (!nzchar(isric_file) || !file.exists(isric_file)) {
+    stop("SoilGrids raster not found. Set options(R3DFEM.isric_file = ...) or the argument isric_file")
+  }
+  rst <- terra::rast(isric_file)
 
   soil <- exactextractr::exact_extract(rst, plot, "mean", append_cols = id, progress = FALSE)
   gc()

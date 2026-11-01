@@ -1,0 +1,95 @@
+//parameterization file for Quercus ilex  tested on Castelporziano mai 2024 : output TEST_12a (see evaluation)
+LIGHT_TOL   1               //4 = very shade intolerant 3 = shade intolerant 2 = shade tolerant 1 = very shade tolerant
+PHENOLOGY   1.1             //PHENOLOGY 0.1 = deciduous broadleaf, 0.2 = deciduous needle leaf, 1.1 = broad leaf evergreen, 1.2 = needle leaf evergreen 
+ALPHA   0.044               //Canopy quantum efficiency (molC/molPAR) (0.02, Penuelas et al., 1997; 0.056, Vats et al., 2011, 0.044 for Q. ilex Vitale et al., 2012))
+EPSILONgCMJ -9999           //Light Use Efficiency  (gC/MJ)(used if ALPHA is not available) 
+GAMMA_LIGHT  0              // now is set to 0 in the model 
+K   0.65                    // Extinction coefficient for absorption of PAR by canopy  (0.65 Rambal et al., 1996, 0.72 Hoff et al., 2002), 0.69 for Q. ilex Vitale et al., 2012 
+ALBEDO    0.12                //albedo 0.12 (Hoff et al., 2002)
+INT_COEFF  0.3              //precip interception coefficient for DNF from Tatarinov et al., 
+SLA_AVG0   6                 //Average Specific Leaf Area m^2/KgC (juvenile) sunlit/shaded leaves Forrester et al., 2017
+SLA_AVG1  5                 //Average Specific Leaf Area m^2/KgC (mature) sunlit/shaded leaves Forrester et al., 2017
+TSLA     80                 //Age at which SLA_AVG = (SLA_AVG1 + SLA_AVG0 )/2 Forrester et al., 2017
+SLA_RATIO   2               //(DIM) ratio of shaded to sunlit projected SLA  for Q. ilex from Mollicone et al., 2002 Chiesi et al., 2007 
+LAI_RATIO   2               //(DIM) all-sided to projected leaf area ratio               
+FRACBB0 0.30                //Branch and Bark fraction at age 0
+FRACBB1 0.25                //Branch and Bark fraction for mature stands
+TBB 20                      //Age at which fracBB = (FRACBB0 + FRACBB1 )/ 2
+RHO0    0.72                //Minimum Basic Density for young Trees t/m^3 Federici et al., 2008, 0.96 (Pilli et al., 2006)
+RHO1    0.96                //Maximum Basic Density for young Trees 0.82 Tabacchi et al., 2011
+TRHO    50                  //Age at which rho = (RHOMIN + RHOMAX )/2
+FORM_FACTOR 0.454           //Form factor Seidl et al., 2012 for Q. robur
+COEFFCOND   0.061           // Define stomatal responsee to VPD in mbar see 0.061 Pietsch et al., 2005 ?
+BLCOND  0.01                //Canopy Boundary Layer conductance see Pietsch et al., 2005, Mollicone et al
+MAXCOND 0.0025 // 0.0025     //0.001 da Chiesi et al.2007 ; 0.0038 Maximum Stomatal Conductance in m/sec for Q. ilex from Mollicone et al., (0.0025 (Hoff et al., 2002)) 0.021 Korner et al. 1979?   // TEST12 has 0.0015
+CUTCOND 0.00001             //Cuticul conductance in m/sec for Q. ilex from Mollicone et al.
+MAXAGE  300                 //Determines rate of "physiological decline" of forest //modified (up to 1000 years) 300 yr Lemee 1989
+RAGE    0.75                //Relative Age to give fAGE = 0.5
+NAGE    4                   //Power of relative Age in function for Age
+GROWTHTMIN  0               // 0 Minimum temperature for growth (for Q. ilex Hoff et al., 2002)
+GROWTHTMAX  40              //Maximum temperature for growth (for Q. ilex Hoff et al., 2002)
+GROWTHTOPT   20              //Optimum temperature for growth (Fernandex et al., 2008) 23 Fares et al., 2013
+GROWTHSTART 0               //average temperature for starting growth in °C
+TAU            4
+X0             -2
+Smax            9
+MINDAYLENGTH  0             // minimum day length for decidu0us
+SWPOPEN     -0.6            // Leaf water potential: start of reduction (for Q. ilex Hoff et al., 2002) for Q. ilex Mollicone et al., 2002
+SWPCLOSE    -3.2            // Leaf water potential: complete reduction (for Q. ilex Hoff et al., 2002) -3.2 for Q ilex Mollicone et al., 2002
+OMEGA_CTEM  0.8             //ALLOCATION PARAMETER control the sensitivity of allocation to changes in water and light availability
+S0CTEM	    0.1                //PARAMETER CONTROLLING ALLOCATION TO STEM/MINIMUM RATIO TO C TO STEM (0.1 defualt value) for 0.53 Q. robur from Balboa et al ppt
+R0CTEM	 0.55                //PARAMETER CONTROLLING ALLOCATION TO ROOT/MINIMUM RATIO TO C TO ROOTS (0.55 default value) 0.40 for Q. robur from Balboa et al ppt
+F0CTEM	0.35                 //PARAMETER CONTROLLING ALLOCATION TO FOLIAGE (0.35 defult value) 0.07 for Q. robur from Balboa et al ppt
+FRUIT_PERC  0.1  //0.5 TO BE CHECKED     //fraction of NPP allocated for reproduction  for quercus cerris it was set to 0 (broadleaves)
+CONES_LIFE_SPAN 1           //0 Life span for cones (yr) NOTe:Even if the tree does not have cones, we need to set a value > 0 otherwise there is a nan error in leaf_fall.c
+FINE_ROOT_LEAF  1           //allocation new fine root C:new leaf (ratio) see Mollicone et al 2002
+STEM_LEAF   1               //allocation new stem C:new leaf (ratio) see Mollicone et al 2002  CURRENTLY NOT USED
+COARSE_ROOT_STEM    0.3     //allocation new coarse root C:new stem (ratio) see Mollicone et al 2002
+LIVE_TOTAL_WOOD 0.071       //new live C:new total wood (ratio) for DNF from Pietsch
+N_RUBISCO            0.088  //Fraction of leaf N in Rubisco (ratio)
+CN_LEAVES   42              //CN of leaves (kgC/kgN) for Q. ilex from Chiesi et al., 2007
+CN_FALLING_LEAVES   49      //CN of leaf litter (kgC/kgN) for Q. ilex from Chiesi et al., 2007
+CN_FINE_ROOTS   42          //CN of fine roots (kgC/kgN) for Q. ilex from Chiesi et al., 2007
+CN_LIVEWOOD          42     //CN of live woods (kgC/kgN) for Q. ilex from Chiesi et al., 2007
+CN_DEADWOOD          300    //CN of dead woods (kgC/kgN) for Q. ilex from Chiesi et al., 2007
+LEAF_LITT_LAB_FRAC   0.32   //leaf litter labile fraction for Quercus ilex from Chiesi et al., 2007
+LEAF_LITT_CEL_FRAC   0.44   //leaf litter cellulose fraction for Quercus ilex from Chiesi et al., 2007
+LEAF_LITT_LIGN_FRAC  0.24   //leaf litter lignin fraction for Quercus ilex from Chiesi et al., 2007
+FROOT_LITT_LAB_FRAC  0.34   //fine root litter labile fraction for Quercus ilex from Chiesi et al., 2007
+FROOT_LITT_CEL_FRAC  0.44   //fine root litter cellulose fraction for Quercus ilex from Chiesi et al., 2007
+FROOT_LITT_LIGN_FRAC 0.22   //fine root litter lignin fraction for Quercus ilex from Chiesi et al., 2007
+DEADWOOD_CEL_FRAC    0.76   //dead wood litter cellulose fraction for Quercus ilex from Chiesi et al., 2007
+DEADWOOD_LIGN_FRAC   0.24   //dead wood litter lignin fraction for Quercus ilex from Chiesi et al., 2007
+BUD_BURST   0               //days of bud burst at the beginning of growing season (only for deciduous)
+LEAF_FALL_FRAC_GROWING  0. // era messo a 0.2 ma per i pini era 0. proportions of the growing season of leaf fall
+LEAF_FINEROOT_TURNOVER  0.5 // 0.5 Average yearly fine root turnover rate for Q. ilex from Chiesi et al., 2007 (leaf lifespan 1-4 years)
+LIVEWOOD_TURNOVER      0.05  //Annual yearly livewood turnover rate 
+SAPWOOD_TURNOVER       0.05 //Annual yearly sapwood turnover rate  
+DBHDCMAX    0.24             // COMPUTED IN THE CODE 0.45 Condes & Sterba 2005       //Low Density
+DBHDCMIN    0.14            //High Density
+SAP_A   0.363 //0.674        //a 0.363 value from Limousine 2009 GCB value, from Kostner ? for Q. petreae in cm; 0.391 diffuse ring specie according to Wullschleger et al.2001
+SAP_B 1.992 // 2.19 // 2.149 // 2.256  // 2.36 //2.149 //1.992  //b 2.149  value from Limousine 2009 GCB; value value from Kostner for Q. petreae in cm; 2.071 Diffuse ring species Wullschleger et al.2001
+SAP_LEAF   2600           //2600 sapwood_max leaf area ratio in pipe model   Limousin et al.2010    
+SAP_WRES    0.05            //Sapwood-Reserve biomass ratio used if no Wres data are available 0.11 for deciduous 0.05 for evergreen  see Schwalm and Ek, 2004 Ecological Modelling
+STEMCONST_P     0.1916  //  0.187     // a 0.1916 parameter for Q. Ilex Rambal et al 2004 GCB
+STEMPOWER_P   2.27 // 2.171   //  2.112     // b 2.171  parameter for Q. Ilex Rambal et al 2004 GCB
+CRA     12                  // from basilicata parametrizazion. It better fits the actual height. 
+CRB  0.03                   //
+CRC   0.5                   //
+HDMAX_A 240.5               //A parameter for Height (m) to Base diameter (m) ratio MAX Seidl et al., 2012 for Q. robur
+HDMAX_B -0.324              //B parameter for Height (m) to Base diameter (m) ratio MAX Seidl et al., 2012 for Q. robur
+HDMIN_A 127.2               //A parameter for Height (m) to Base diameter (m) ratio MIN Seidl et al., 2012 for Q. robur
+HDMIN_B -0.357              //B parameter for Height (m) to Base diameter (m) ratio MIN Seidl et al., 2012 for Q. robur
+CROWN_FORM_FACTOR 0         // Crown form factor (0 = cylinder, 1 = cone, 2 = sphere)
+CROWN_A    0.413            //Crown relationship with tree height for Q. robur as in Sortie ND
+CROWN_B     1               //Crown exponential with tree height (Fixed to 1 as in Sorie-ND)
+MAXSEED 20000               //numero massimo semi prodotti dalla pianta (da TREEMIG) 
+MASTSEED    5               //ricorrenza anni di pasciona (da TREEMIG) 
+WEIGHTSEED  7               //peso frutto in g FOR Quercus sp (Bernetti)
+SEXAGE  30                  //Age at Sexual Maturity FOR Quercus sp (per Bernetti 75)
+GERMCAPACITY    0.70        //Geminability (Lischke H. & Loffler T. J.)
+ROTATION    200             //Basilicata. Forest Rotation for harvesting 
+THINNING           1             //Thinning regime
+THINNING_REGIME    0        //Thinning regime (0 = above, 1 = below)
+THINNING_INTENSITY  1       //Thinning intensity (% of Basal Area/N-tree to remove)
+CONV_VOL_FACTOR          1.04      // FAKE ONE conversion factor to convert stem biomass to volume (GSV)

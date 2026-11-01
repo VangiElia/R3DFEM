@@ -1,0 +1,96 @@
+//Betula pendula parameterization   (Paulina Puchi 2024) Runs in the Forest_Navegator . CHECKED AND ADDED NEW COMMENTS BY DDALMO 11.12.24
+LIGHT_TOL               4       //4 = very shade intolerant 3 = shade intolerant 2 = shade tolerant 1 = very shade tolerant /betula pendula
+PHENOLOGY               0.1      //PHENOLOGY 0.1 = deciduous broadleaf, 0.2 = deciduous needle leaf, 1.1 = broad leaf evergreen, 1.2 = needle leaf evergreen / betula pendula
+ALPHA                  -9999     //Canopy quantum efficiency (molC/molPAR) //  0.03 μmol CO2 μmol−1 photons for betula pendula in Tenkanen et al 2020  
+EPSILONgCMJ            -9999     //Light Use Efficiency (gC/molPAR)(used if ALPHA is not available) 
+GAMMA_LIGHT              0       // not used // Empirical parameter for Light modifiers see Peltionemi et al., 2012 
+K                        0.54     // Extinction coefficient for absorption of PAR by canopy for deciduos broadleaf forest White et al. 2000
+ALBEDO                   0.08    // 0.08/0.09 summer albedo and winter albedo/ snow cover 0.12 pinus banksiana from Bartlett & Verseghy 2015   // 0.095 //0.06 // 0.095 //averaged for P.abies, 0.06 Jarvis et al., 1976, 0.095 from Breuer et al., 2003
+INT_COEFF                0.035     //precip interception coefficient e.g. for temperate broafleaf in White et al 2000
+SLA_AVG0               24 // 33 betula pendula     //Average Specific Leaf Area m^2/KgDM (MATURE) sunlit/shaded leaves  From Forrester et al.2017 20-24 for yuvenile Betulacee
+SLA_AVG1                20 // 33 betula pendula //Average Specific Leaf Area m^2/KgDM (juvenile) sunlit/shaded leaves   From Forrester et al.2017 10-20 for yuvenile Betulacee
+TSLA                     30 //betula pendula  //Age at which SLA_AVG = (SLA_AVG1 + SLA_AVG0 )/2     
+SLA_RATIO                2.0   //(DIM) ratio of shaded to sunlit projected SLA  White et al 2000
+LAI_RATIO                3.1     //(DIM) all-sided to projected leaf area ratio from Hovi et al. 2016 birchs  //
+FRACBB0                 0.29     //Branch and Bark fraction at age 0 e.g. for P. sylvestris, from Xenakis et al., 2008, 0.29 deducted for P. sylvestris from Yuste et al., 2005, 0.29 from Lehtonen et al., 2004 For Eco Manag, 0.71 from xiao and Ceulemans
+FRACBB1                 0.29   //Branch and Bark fraction for mature stands e.g. for P. sylvestris, from Xenakis et al., 2008, 0.29 deducted for P. sylvestris from Yuste et al., 2005, 0.29 from Lehtonen et al., 2004 For Eco Manag, 0.18 from Jenssen et al 1999, 0.77 from xiao and Ceulemans
+TBB                     10      //Age at which fracBB = (FRACBB0 + FRACBB1 )/ 2 for P. sylvestris, from Xenakis et al., 2008
+RHO0                    0.525 // Betulacee from Wodls WoodDensityDatabase 0.35 // pinus banksiana in Schneider et al 2008  //Minimum Basic Density for young Trees t/m^3 for Picea abies Kantola and Makela 2006, 0.43 Seidl et al., 2012, 0.45 Pilli et al., 2006
+RHO1                   0.525 // Betulacee from Wodls WoodDensityDatabase  0.44   //60 years in pinus banksiana in Schneider et al 2008 Maximum Basic Density for old Trees t/m^3 for Picea abies Kantola and Makela 2006, 0.43 Seidl et al., 20120, 0.45 Pilli et al., 2006
+TRHO                    50   //Age at which rho = (RHOMIN + RHOMAX )/2
+FORM_FACTOR            0.5    //for betula pendula   //STEM Form factor Seidl et al., 2012
+COEFFCOND             0.08 //    this for betula pendula  in White et al 2000 //Define stomatal responsee to VPD in mbar
+BLCOND               0.009   //Canopy Boundary Layer conductance  White et al.2000 (generic) 
+MAXCOND            0.0044 //0.002 //0.0044 Mollicone et al. estimate used for Quercus Robur (as pilot species for Betula as well) //0.006     //Maximum Stomatal Conductance in m/sec White et al.2000 (generic), 0.002 from??
+CUTCOND             0.000001  //Cuticul conductance in m/sec for deciduous broadleaf forest in BOND-LAMBERTY et al 2005 
+MAXAGE             100  // up 100 yrs average Birch is among the shorter-lived of trees and does not usually exceed 100 years (Gimingham 1984; Kinnaird 1968) in ATKINSON 1992 journal of ecology
+RAGE                0.95    //Relative Age to give fAGE = 0.5 0.95 for Picea abies Seidl et al., 2012
+NAGE                4       //Power of relative Age in function for Age for Picea abies Seidl et al., 2012
+GROWTHTMIN          2 // Minimum temperature for growth betula pendula  Matti & Pusenius 2005 tree physiol //  -1 and 2 for bud burst Matti & Pusenius 2005 tree physiol   
+GROWTHTMAX          33 // Maximum temperature for growth Betula pendula Aalto and Juurola et 2001 //     //Maximum temperature for growth 35 
+GROWTHTOPT         18 // Betula pendula 18.3 for the southern provenance vs 18.9 for the northen one Tenkanen et al 2020 tree physiology 
+GROWTHSTART         9   //average temperature for starting growth in °C 
+TAU                        4  // Daniela params: currently not used
+X0                        -2  // Daniela params : currently not used
+Smax                       9  // Daniela params: currently not used
+MINDAYLENGTH           12   // we take the same value as Fagus Sylvatica minimum day length for deciduous
+SWPOPEN               -0.34   //  -0.34 Mollicone et al. pilot species Q.robur in MPa   ;-0.34  average for deciduos broadleaf DBF in White el al 2000
+SWPCLOSE              -1.6  //   -1.6   Mollicone et al.  pilot species Q.robur in MPa   ; -2.2  avergage deciduos broadleaf DBF in White el al 2000
+OMEGA_CTEM              0.5  // ALLOCATION PARAMETER control the sensitivity of allocation to changes in water and light availability for Needlleleaf deciduous from Arora et al 2005
+S0CTEM              0.3 //  same as Beech 0.2  //0.15 //PARAMETER CONTROLLING ALLOCATION TO STEM/MINIMUM RATIO TO C TO STEM  at the moment i used the same as for Pinus Sylvestris (Hyyttiala)
+R0CTEM              0.3 // same as beech 0.5   // 0.55   //PARAMETER CONTROLLING ALLOCATION TO ROOT/MINIMUM RATIO TO C TO ROOTS at the moment i used the same as for Pinus Sylvestris (Hyyttiala)
+F0CTEM              0.4 // same as beech  0.30  //PARAMETER CONTROLLING ALLOCATION TO FOLIAGE/MINIMUM RATIO TO C TO STEM at the moment i used the same as for PFINinus Sylvestris (Hyyttiala)
+FRUIT_PERC               0.1 // same as Beech // 0.2    //fraction of NPP allocated for reproduction for P. sylvestris 0.15 from Xiao et al., 2003, 0.2 from Yuste et al., 2005, 
+CONES_LIFE_SPAN          3  //Life span for cones (yrs) //While it flowers every year, the production of viable seeds usually peaks every 2-3 years, P. Beck, G. Caudullo, D. de Rigo, W. Tinner
+FINE_ROOT_LEAF           1.26  //allocation new fine root C:new leaf (ratio) // Betula van Pragg et al 1988 in White et al.2000 
+STEM_LEAF                0.920    //allocation new stem C:new leaf (ratio)// Betula spp (range from 0.92 to 4) Donita et al. 1981 in White et al 2000
+COARSE_ROOT_STEM         0.452   //allocation new coarse root C:new stem (ratio)// betula pubescens Malkonen 1977 in White et al., 2000
+LIVE_TOTAL_WOOD          0.107    //new live C:new total wood (ratio) // Betula alleghannienisis Panshin et al 1964 in White et al. 2000 
+N_RUBISCO        0.088 // as in Mollicone et al. pilot species Q.Rubur // 0.055 // Leaf N in Rubisco (%) 14 for DBL in BOND-LAMBERTY et al 2005 ..14 is a large number???ddalmo: i assume is 0.014
+CN_LEAVES            33.1     //CN of leaves (kgC/kgN)// Betula pumilia Reich et al. 1995a
+CN_FALLING_LEAVES     64.9   //CN of leaf litter (kgC/kgN) Betula pendula Berg an Ekhbom 1991 in White et al 2000
+CN_FINE_ROOTS         42.0   //CN of fine roots (kgC/kgN) White et al.2000 
+CN_LIVEWOOD          57.6    //CN of live woods (kgC/kgN) White et al.2000 
+CN_DEADWOOD           451     //CN of dead woods (kgC/kgN) // Quercus alba  White et al.2000 
+LEAF_LITT_LAB_FRAC      0.38    //leaf litter labile fraction for Betula from Berg et al 1984 in White et al.2000 
+LEAF_LITT_CEL_FRAC      0.36    //leaf litter cellulose fraction for Betula from Berg et al 1984 in White et al.2000 
+LEAF_LITT_LIGN_FRAC     0.26    //leaf litter lignin fraction for Betula from Berg et al 1984 in White et al.2000 
+FROOT_LITT_LAB_FRAC     0.34     //fine root litter labile fraction for all biomes White et al.2000 
+FROOT_LITT_CEL_FRAC      0.44   //fine root litter cellulose fraction for mean of all biomes White et al.2000 
+FROOT_LITT_LIGN_FRAC    0.22    //fine root litter lignin fraction for mean of all biomes  White et al.2000 
+DEADWOOD_CEL_FRAC       0.24    //dead wood litter cellulose fraction for  deciduous broadleaves forest BOND-LAMBERTY et al 2005 
+DEADWOOD_LIGN_FRAC      0.76    //dead wood litter lignin fraction for deciduous broadleaves forest BOND-LAMBERTY et al 2005 
+BUD_BURST               2.4     //2.5 to 4.3 days of bud burst at the beginning of growing season (only for deciduous), betula pendula in HÄKKINEN et al 1998 tree physiology, threshold date for the start of ontogenesis was March 21
+LEAF_FALL_FRAC_GROWING    0.2      //proportions of the growing season of leaf fall // for deciduous broadleaf forest white et al. 2000 
+LEAF_FINEROOT_TURNOVER    1.0  // for deciduous broadleaf forest white et al. 2000 
+LIVEWOOD_TURNOVER       0.02 // as for Beech   ; //Annual yearly livewood turnover rate //  for deciduous broadleaf forest white et al. 2000 
+SAPWOOD_TURNOVER        0.02 // as for Beech ;0.01 //  0.02     //Annual yearly sapwood turnover rate 
+DBHDCMAX                0.5    //Low Density 
+DBHDCMIN                0.14    //High Density for P. sylvestris from Ameztegui et al., 2012 0.14, 0.2 from Grote 2001, 0.14 Urban et al., 2012
+SAP_A                  0.674 // Thurner et al.19 Betula ;       //0.3155 // 0.4159     //a value from Bond-Lamberty 2005 (trees of about 40 years of age)
+SAP_B                  1.9578 //   Thurner et al.19 Betula ;    //2.045   // 2.145      //b value  from Bond-Lamberty 2005 (trees of about 40 years of age)
+SAP_LEAF            3000 // similar to Beech; 1500 // // 1800 estimes for Betula trees in Canada.  //sapwood_max leaf area ratio in pipe model estimated from   Lon et al. 1987
+SAP_WRES              0.11    //Sapwood-Reserve biomass ratio used if no Wres data are available 0.11 for deciduous 0.05 for evergreen see Schwalm and Ek, 2004 Ecological Modelling
+STEMCONST_P        0.048 // Forrester etal 2017 0.048 //  0.0008 Betula pendula Roth in T. Johansson 1999  too high value, from Sweden //a parameter for allometric equation  Age of reference 70
+STEMPOWER_P       2.47  // Forrester 2017; 2.37 it growths too fast//2.2824 Betula pendula Roth in T. Johansson 1999  too high value, from Sweden //b parameter for allometric equation Age of reference
+CRA               28 //   Silver birch Buth et al.2023 + JRC   parameters of the functions describing the relationship between DBH and H  
+CRB               0.066 //  Silver birch Buth et al.2023 + JRC 
+CRC               1.16 //  Silver birch Buth et al.2023 + JRC 
+HDMAX_A                -9999   //A parameter for Height (m) to Base diameter (m) ratio MAX Seidl et al., 2012
+HDMAX_B                -9999   //B parameter for Height (m) to Base diameter (m) ratio MAX Seidl et al., 2012
+HDMIN_A                 -9999    //A parameter for Height (m) to Base diameter (m) ratio MIN Seidl et al., 2012
+HDMIN_B                -9999   //B parameter for Height (m) to Base diameter (m) ratio MIN Seidl et al., 2012
+CROWN_FORM_FACTOR        2    // Morris and Forslund 1992   //Crown form factor (0 = cylinder, 1 = cone, 2 = sphere, 3 = ellipsoid)
+CROWN_A                 0.0896 // betula pendula C4 model description Lasch-Born et al 2024  //0.47  Crown relationship with tree height for Picea Abies deducted from Sharma et al., 2016, 0.47 Kantola and Makela 2006 not used in the model
+CROWN_B                0.5716 // betula pendula   C4 model description Lasch-Born et al 2024  // 0.5503 Crown exponential with tree height for Picea Abies deducted from Sharma et al., 2016, 1 as in Sorie-ND)
+MAXSEED                2300    //    betula pendula ATKINSON 1992, journal of ecology    //numero massimo semi prodotti dalla pianta
+MASTSEED                -9999       //ricorrenza anni di pasciona (da TREEMIG) FOR Quercus sp (Bernetti)
+WEIGHTSEED              0.00017    //peso frutto in g //  0.17-0.25 mg   ATKINSON 1992, journal of ecology
+SEXAGE                  15     //Age at Sexual Maturity // betula pendula and b. pubescebs 10-15 years ATKINSON 1992, journal of ecology
+GERMCAPACITY           -9999    //Geminability (Lischke H. & Loffler T. J.)
+ROTATION 120 // 
+THINNING 15 //Thinning regime 
+THINNING_REGIME         1       //Thinning regime (0 = above, 1 = below) 
+THINNING_INTENSITY 30 //Thinning intensity (% of Basal Area/N-tree to remove) 
+CONV_VOL_FACTOR          0.78       // conversion factor to convert stem biomass to volume (GSV)
+

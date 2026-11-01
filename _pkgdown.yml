@@ -1,0 +1,50 @@
+url: https://vangielia.github.io/R3DFEM/
+template:
+  bootstrap: 5
+
+reference:
+- title: Model
+  contents:
+  - install_model
+  - run_3DCMCCFEM
+  - run_batch
+  - param_sensitivity
+- title: Input files
+  contents:
+  - setup_inputs
+  - make_stand
+  - make_meteo
+  - make_co2
+  - make_soil
+  - make_topo
+  - make_management
+  - make_meteo_EOBS
+  - make_soil_ISRIC
+  - make_CCS
+  - virtual_stand_generator
+- title: Species parameters
+  contents:
+  - list_species
+  - read_species
+- title: Checks
+  contents:
+  - check_inputs
+  - check_meteo_3DFEM
+- title: Outputs and plots
+  contents:
+  - read_output
+  - plot_output_3DFEM
+  - plot_meteo_3DFEM
+  - plot_soil_3DFEM
+- title: Other
+  contents:
+  - R3DFEM
+  - "%>%"
+  - R3DFEM-deprecated
+
+articles:
+- title: Articles
+  navbar: ~
+  contents:
+  - R3DFEM
+  - input-files

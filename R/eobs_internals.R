@@ -1,11 +1,12 @@
-# Internal engine of make_meteo_EOBS() and make_meteo_EOBS_30.0()
+# Internal engine of make_meteo_EOBS()
 #
 # version: E-OBS version used in the file names (e.g. "29.0", "30.0")
 # last_date: last date covered by that version
+# eobs_dir: directory of the E-OBS netCDF files
 # file_name: function(site, id) returning the output file name
 
 .make_meteo_EOBS <- function(plot, crs, buffer, id, daterange, convert_rad, parallel,
-                             site, outdir, return_df, version, last_date, file_name) {
+                             site, outdir, return_df, version, last_date, eobs_dir, file_name) {
 
   terra::gdalCache(46567)
 
@@ -45,11 +46,11 @@
   # rr = precipitation, tg/tn/tx = mean/min/max temperature
   vars <- c("hu", "qq", "rr", "tg", "tn", "tx")
   rst <- vapply(vars, function(v) {
-    system.file("extdata", paste0(v, "_ens_mean_0.1deg_reg_v", version, "e.nc"), package = "R3DFEM")
+    file.path(eobs_dir, paste0(v, "_ens_mean_0.1deg_reg_v", version, "e.nc"))
   }, "")
-  if (any(!nzchar(rst))) {
-    stop("E-OBS v", version, " file(s) not found in R3DFEM/inst/extdata for: ",
-         paste(vars[!nzchar(rst)], collapse = ", "))
+  if (any(!file.exists(rst))) {
+    stop("E-OBS v", version, " file(s) not found in ", eobs_dir, " for: ",
+         paste(vars[!file.exists(rst)], collapse = ", "), ". Set options(R3DFEM.eobs_dir = ...) or the argument eobs_dir")
   }
 
   if (parallel) {

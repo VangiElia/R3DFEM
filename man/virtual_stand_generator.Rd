@@ -57,19 +57,9 @@ if man = "var"; options: c("on","off")}
 \item{year_start_man}{Integer: If man = "on"; Starting year of management;
 Default to -9999.}
 
-\item{rep_trees}{Integer: Number of replanted trees; Default to -9999.}
-
-\item{rep_age}{Integer: Age of replanted trees; Default to -9999.}
-
-\item{rep_dbh}{Integer: Average DBH of replanted trees; Default to -9999.}
-
-\item{rep_lai}{Integer: Average LAI of replanted trees; Default to -9999.}
-
-\item{rep_height}{Integer: Average height of replanted trees; Default to
--9999.}
-
-\item{rep_species}{Character: Species of replanted trees (name of the
-parameterization file); Default to -9999.}
+\item{rep_trees, rep_age, rep_dbh, rep_lai, rep_height, rep_species}{Replanting
+parameters (number of trees, age, average DBH, LAI, height and species).
+Default to -9999.}
 
 \item{reg_trees}{Integer: Number of saplings; Default to -9999.}
 

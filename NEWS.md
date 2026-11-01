@@ -1,3 +1,65 @@
+# R3DFEM 0.2.0
+
+The package now runs only the version 5.7 of the 3D-CMCC-FEM.
+
+## Breaking changes
+
+* `run_3DCMCCFEM()` runs the version 5.7 (it has the arguments of the former
+  `run_3DCMCCFEM_5.7()`); the version 5.6 is no longer supported. Use R3DFEM
+  0.1.0 for the 5.6.
+* The model executable is no longer shipped with the package: install it once
+  with `install_model()` (download, or copy of a local file) or set
+  `options(R3DFEM.exe = ...)` / the environment variable `R3DFEM_EXE`. This
+  also allows binaries compiled on Linux or macOS.
+* `make_meteo_EOBS()` handles the E-OBS versions 30.0 (default) and 29.0
+  (`version`), reads the netCDF files from `eobs_dir` (option
+  `R3DFEM.eobs_dir`) and names the files of several points `id_meteo.txt`
+  (`site_id_meteo.txt` with `site`), as `make_soil_ISRIC()`.
+* `make_soil_ISRIC()` reads the SoilGrids raster from `isric_file` (option
+  `R3DFEM.isric_file`).
+* `check_inputs()` has no `version` argument: the species files must always
+  contain the parameters of the 5.7 (e.g. `CONV_VOL_FACTOR`).
+* The gif functions (`make_gif_3DFEM()` and the internal gif helpers) were
+  removed, together with the dependencies rgl, rLiDAR (archived on CRAN), FNN,
+  magick, gifski, gt, RColorBrewer and doParallel.
+* The run messages are sent with `message()` (they can be silenced with
+  `suppressMessages()`).
+
+## New functions
+
+* `install_model()`, `model_path()`, `model_available()`.
+* `list_species()`, `species_file()`, `copy_species()`: parameterizations of
+  the version 5.7 for 19 European species (including coppice), in
+  `extdata/species`.
+* `setup_inputs()` prepares the whole input directory of a site in one call.
+* `read_output()` reads daily, monthly and annual outputs (one or many files)
+  as a data.frame, with a DATE column.
+* `run_batch()` runs many simulations (sites, scenarios, options, species
+  parameters), each in its own directory, sequentially or in parallel with
+  future.
+* `param_sensitivity()` (now exported) is based on `run_batch()` and returns
+  the data and a ggplot.
+
+## Deprecated
+
+* `run_3DCMCCFEM_5.7()` and `make_meteo_EOBS_30.0()` are aliases of
+  `run_3DCMCCFEM()` and `make_meteo_EOBS()`.
+
+## Other changes
+
+* Example data: the BilyKriz, Hyytiala and Soroe inputs use the 5.7
+  parameterizations; the 5.6 executables and outputs were removed.
+* The species files are read also when saved with a byte order mark.
+* `make_co2()` accepts a data.frame with a single year.
+* `plot_output_3DFEM()` and `virtual_stand_generator()` use `read_output()`;
+  `plot_output_3DFEM()` no longer warns when plotting integer and double
+  variables together.
+* `run_3DCMCCFEM()` warns when `outputdir` is too long for the model (260
+  characters limit of the paths).
+* Unit tests (testthat), GitHub Actions (R CMD check, pkgdown site), a
+  precomputed "Getting started" vignette and a new vignette on the input
+  files.
+
 # R3DFEM 0.1.0
 
 ## New functions
