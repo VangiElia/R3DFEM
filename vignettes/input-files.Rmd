@@ -106,7 +106,7 @@ make_soil("Collelongo", lat = 41.85, lon = 13.59, clay = 25, silt = 35, sand = 4
 make_topo("Collelongo", elev = 1560, outdir = inputdir)
 ```
 
-```{r plot-soil, fig.height = 5, eval = requireNamespace("plotrix", quietly = TRUE)}
+```{r plot-soil, fig.height = 5}
 plot_soil_3DFEM(file.path(inputdir, "Collelongo_soil.txt"), pch = 21, bg.symbols = "red", cex = 2)
 ```
 

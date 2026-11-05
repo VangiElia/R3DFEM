@@ -15,7 +15,7 @@ See the [official web page](https://www.forest-modelling-lab.com/the-3d-cmcc-mod
 
 ```r
 # install.packages("remotes")
-remotes::install_github("VangiElia/R3DFEM", build_vignettes = TRUE)
+remotes::install_github("VangiElia/R3DFEM")
 library(R3DFEM)
 
 # download the model executable (Windows build of the version 5.7), only once
@@ -23,9 +23,18 @@ install_model()
 ```
 
 The executable is installed in a user directory (`tools::R_user_dir("R3DFEM", "data")`).
-To use an executable already on disk, e.g. a binary compiled on Linux or macOS from the
-[source code](https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM), use
+The executable available for download runs only on Windows. On Linux and macOS compile the
+model from the [source code](https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM), then use
 `install_model("path/to/executable")` or `options(R3DFEM.exe = "path/to/executable")`.
+
+The vignettes are [online](https://vangielia.github.io/R3DFEM/articles/). To install them
+with the package, knitr and rmarkdown must be installed first (otherwise `R CMD build`
+fails right after "checking DESCRIPTION meta-information"):
+
+```r
+install.packages(c("knitr", "rmarkdown"))
+remotes::install_github("VangiElia/R3DFEM", build_vignettes = TRUE)
+```
 
 ## Getting started
 
@@ -44,10 +53,8 @@ plot_output_3DFEM(out[["annual"]], y = c("GPP", "NPP", "DBH"))
 
 The vignettes describe the whole workflow and the input files:
 
-```r
-vignette("R3DFEM")       # getting started: inputs, runs, batches, plots
-vignette("input-files")  # input files and species parameters
-```
+- [Getting started](https://vangielia.github.io/R3DFEM/articles/R3DFEM.html) (`vignette("R3DFEM")`): inputs, runs, batches, plots
+- [Input files and species parameters](https://vangielia.github.io/R3DFEM/articles/input-files.html) (`vignette("input-files")`)
 
 ## Functions
 

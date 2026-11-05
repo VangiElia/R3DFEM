@@ -57,6 +57,25 @@ test_that("settings table and run options", {
   expect_false(R3DFEM:::.uses_management("var", "on", "off", "off"))
 })
 
+test_that("install_model refuses the Windows executable on other systems", {
+  dir <- withr::local_tempdir()
+  local_mocked_bindings(.is_windows = function() FALSE)
+  expect_error(install_model(dir = dir), "only on Windows")
+  expect_length(list.files(dir), 0)
+  # a binary compiled by the user is accepted
+  fake <- withr::local_tempfile()
+  writeBin(as.raw(1:10), fake)
+  expect_true(file.exists(suppressMessages(install_model(fake, dir = dir))))
+})
+
+test_that("plot_soil_3DFEM works with the imported plotrix", {
+  dir <- withr::local_tempdir()
+  suppressMessages(make_soil("S", lat = 45, lon = 11, clay = 20, silt = 30, sand = 50, outdir = dir))
+  grDevices::pdf(file.path(dir, "soil.pdf"))
+  on.exit(grDevices::dev.off())
+  expect_no_error(plot_soil_3DFEM(file.path(dir, "S_soil.txt"), pch = 21, bg.symbols = "red", cex = 2))
+})
+
 test_that("model executable is found through the options", {
   withr::local_options(R3DFEM.exe = NULL, R3DFEM.model_dir = withr::local_tempdir())
   withr::local_envvar(R3DFEM_EXE = "")

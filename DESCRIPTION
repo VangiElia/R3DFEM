@@ -1,6 +1,6 @@
 Package: R3DFEM
 Title: R Wrapper for the 3D-CMCC-FEM Forest Model (Version 5.7)
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(
     person(given= "Elia",family= "Vangi",email = "elia.vangi@isafom.cnr.it", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0000-0002-9772-2258")),
@@ -34,6 +34,7 @@ Imports:
     foreach,
     lubridate,
     magrittr,
+    plotrix,
     reshape2,
     sf,
     stringr,
@@ -47,7 +48,6 @@ Suggests:
     future.apply,
     ipred,
     knitr,
-    plotrix,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

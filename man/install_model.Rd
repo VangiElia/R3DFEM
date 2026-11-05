@@ -15,7 +15,7 @@ model_available()
 \arguments{
 \item{source}{Character: URL or path of a local file of the executable.
 Default to the Windows build of the version 5.7 published in the GitHub
-releases of R3DFEM. On Linux and macOS the model must be compiled from
+releases of R3DFEM (error on other systems). On Linux and macOS the model must be compiled from
 the \href{https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM}{source
 code} and the path of the binary given here (or with the option below).}
 

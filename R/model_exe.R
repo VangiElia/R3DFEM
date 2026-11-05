@@ -8,7 +8,7 @@
 #'
 #' @param source Character: URL or path of a local file of the executable.
 #'   Default to the Windows build of the version 5.7 published in the GitHub
-#'   releases of R3DFEM. On Linux and macOS the model must be compiled from
+#'   releases of R3DFEM (error on other systems). On Linux and macOS the model must be compiled from
 #'   the \href{https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM}{source
 #'   code} and the path of the binary given here (or with the option below).
 #' @param dir Character: directory where the executable is installed. Default
@@ -38,6 +38,12 @@
 #' }
 #' @export
 install_model <- function(source = .model_url(), dir = .model_dir(), overwrite = FALSE) {
+  # the executable of the GitHub release runs only on Windows
+  if (missing(source) && !.is_windows()) {
+    stop("The executable available for download runs only on Windows. Compile the model from ",
+         "https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM and use ",
+         "install_model('path/to/the/executable').")
+  }
   stopifnot("source must be a character vector of length 1" = check_char(source),
             "overwrite must be logical" = check_log(overwrite))
   dest <- file.path(dir, .exe_name())
@@ -96,8 +102,12 @@ model_available <- function() {
   !is.null(.find_model())
 }
 
+.is_windows <- function() {
+  .Platform$OS.type == "windows"
+}
+
 .exe_name <- function() {
-  if (.Platform$OS.type == "windows") "3D_CMCC_Forest_Model_5.7.exe" else "3D_CMCC_Forest_Model_5.7"
+  if (.is_windows()) "3D_CMCC_Forest_Model_5.7.exe" else "3D_CMCC_Forest_Model_5.7"
 }
 
 .model_dir <- function() {
