@@ -22,9 +22,10 @@ model_available()
 
   Character: URL or path of a local file of the executable. Default to
   the Windows build of the version 5.7 published in the GitHub releases
-  of R3DFEM. On Linux and macOS the model must be compiled from the
-  [source code](https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM) and
-  the path of the binary given here (or with the option below).
+  of R3DFEM (error on other systems). On Linux and macOS the model must
+  be compiled from the [source
+  code](https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM) and the
+  path of the binary given here (or with the option below).
 
 - dir:
 

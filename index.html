@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">R3DFEM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,17 +62,21 @@
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"VangiElia/R3DFEM"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"VangiElia/R3DFEM"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/VangiElia/R3DFEM" class="external-link">R3DFEM</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># download the model executable (Windows build of the version 5.7), only once</span></span>
 <span><span class="fu"><a href="reference/install_model.html">install_model</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>The executable is installed in a user directory (<code>tools::R_user_dir("R3DFEM", "data")</code>). To use an executable already on disk, e.g. a binary compiled on Linux or macOS from the <a href="https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM" class="external-link">source code</a>, use <code>install_model("path/to/executable")</code> or <code>options(R3DFEM.exe = "path/to/executable")</code>.</p>
+<p>The executable is installed in a user directory (<code>tools::R_user_dir("R3DFEM", "data")</code>). The executable available for download runs only on Windows. On Linux and macOS compile the model from the <a href="https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM" class="external-link">source code</a>, then use <code>install_model("path/to/executable")</code> or <code>options(R3DFEM.exe = "path/to/executable")</code>.</p>
+<p>The vignettes are <a href="https://vangielia.github.io/R3DFEM/articles/">online</a>. To install them with the package, knitr and rmarkdown must be installed first (otherwise <code>R CMD build</code> fails right after “checking DESCRIPTION meta-information”):</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"knitr"</span>, <span class="st">"rmarkdown"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"VangiElia/R3DFEM"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">inp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"bilykriz"</span>, <span class="st">"rcp0p0"</span>, package <span class="op">=</span> <span class="st">"R3DFEM"</span><span class="op">)</span></span>
 <span><span class="va">work</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"bilykriz"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/setup_inputs.html">setup_inputs</a></span><span class="op">(</span><span class="st">"BilyKriz"</span>, <span class="va">work</span>,</span>
@@ -84,9 +88,12 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="reference/read_output.html">read_output</a></span><span class="op">(</span><span class="va">out</span><span class="op">[[</span><span class="st">"annual"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/plot_output_3DFEM.html">plot_output_3DFEM</a></span><span class="op">(</span><span class="va">out</span><span class="op">[[</span><span class="st">"annual"</span><span class="op">]</span><span class="op">]</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GPP"</span>, <span class="st">"NPP"</span>, <span class="st">"DBH"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The vignettes describe the whole workflow and the input files:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"R3DFEM"</span><span class="op">)</span>       <span class="co"># getting started: inputs, runs, batches, plots</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"input-files"</span><span class="op">)</span>  <span class="co"># input files and species parameters</span></span></code></pre></div>
+<ul>
+<li>
+<a href="https://vangielia.github.io/R3DFEM/articles/R3DFEM.html">Getting started</a> (<code><a href="articles/R3DFEM.html">vignette("R3DFEM")</a></code>): inputs, runs, batches, plots</li>
+<li>
+<a href="https://vangielia.github.io/R3DFEM/articles/input-files.html">Input files and species parameters</a> (<code><a href="articles/input-files.html">vignette("input-files")</a></code>)</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a>

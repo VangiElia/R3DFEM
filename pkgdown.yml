@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   input-files: input-files.html
   R3DFEM: R3DFEM.html
-last_built: 2026-11-01T12:56Z
+last_built: 2026-11-05T11:21Z
 urls:
   reference: https://vangielia.github.io/R3DFEM/reference
   article: https://vangielia.github.io/R3DFEM/articles

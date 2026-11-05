@@ -1,5 +1,17 @@
 # Changelog
 
+## R3DFEM 0.2.1
+
+- plotrix is now a mandatory dependency (Imports):
+  [`plot_soil_3DFEM()`](https://vangielia.github.io/R3DFEM/reference/plot_soil_3DFEM.md)
+  no longer fails after a default installation.
+- [`install_model()`](https://vangielia.github.io/R3DFEM/reference/install_model.md)
+  without `source` stops with a clear error on Linux and macOS, instead
+  of installing the Windows executable.
+- README: the default installation no longer builds the vignettes, which
+  need knitr and rmarkdown (`install_github()` does not install them);
+  the vignettes are linked online.
+
 ## R3DFEM 0.2.0
 
 The package now runs only the version 5.7 of the 3D-CMCC-FEM.

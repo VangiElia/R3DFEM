@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">R3DFEM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -149,7 +149,7 @@ the following years prescribe the stand density.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/make_stand.html">make_stand</a></span><span class="op">(</span><span class="st">"Collelongo"</span>, year <span class="op">=</span> <span class="fl">2000</span>, age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">90</span>, <span class="fl">120</span><span class="op">)</span>, species <span class="op">=</span> <span class="st">"Fagussylvatica"</span>,</span>
 <span>           n_trees <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">150</span><span class="op">)</span>, avdbh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">28</span>, <span class="fl">45</span><span class="op">)</span>, height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22</span>, <span class="fl">27</span><span class="op">)</span>, outdir <span class="op">=</span> <span class="va">inputdir</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Outdir does not exist. It will be created</span></span>
-<span><span class="co">#&gt; file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_stand.txt saved</span></span></code></pre></div>
+<span><span class="co">#&gt; file /tmp/RtmpzSpE6k/Collelongo/Collelongo_stand.txt saved</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="meteo">Meteo<a class="anchor" aria-label="anchor" href="#meteo"></a>
@@ -189,7 +189,7 @@ converts the radiation from W m<sup>-2</sup>
 <span><span class="co">#&gt; Warning in check_meteo_3DFEM(meteo, correct = FALSE, impute = FALSE, save =</span></span>
 <span><span class="co">#&gt; FALSE): There are 40 row(s) in which precipitation is less than the precision</span></span>
 <span><span class="co">#&gt; of the model!</span></span>
-<span><span class="co">#&gt; file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_meteo.txt saved</span></span></code></pre></div>
+<span><span class="co">#&gt; file /tmp/RtmpzSpE6k/Collelongo/Collelongo_meteo.txt saved</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_meteo_3DFEM.html">plot_meteo_3DFEM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">inputdir</span>, <span class="st">"Collelongo_meteo.txt"</span><span class="op">)</span>, var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tmax"</span>, <span class="st">"Tmin"</span>, <span class="st">"Precip"</span><span class="op">)</span>,</span>
 <span>                 daterange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2000-01-01"</span>, <span class="st">"2002-12-31"</span><span class="op">)</span>, window <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
@@ -209,7 +209,7 @@ run the model beyond the observations:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/make_CCS.html">make_CCS</a></span><span class="op">(</span>meteo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">inputdir</span>, <span class="st">"Collelongo_meteo.txt"</span><span class="op">)</span>, obs_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="fl">2020</span><span class="op">)</span>,</span>
 <span>         end_year <span class="op">=</span> <span class="fl">2100</span>, outdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"ccs"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Outdir does not exist. It will be created</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp6RTMCO/ccs/Collelongo_meteo.txt saved!</span></span></code></pre></div>
+<span><span class="co">#&gt; /tmp/RtmpzSpE6k/ccs/Collelongo_meteo.txt saved!</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="co2">CO2<a class="anchor" aria-label="anchor" href="#co2"></a>
@@ -221,7 +221,7 @@ the years:</p>
 <code class="sourceCode R"><span><span class="va">co2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_co2.html">make_co2</a></span><span class="op">(</span><span class="st">"Collelongo"</span>, years <span class="op">=</span> <span class="fl">2000</span><span class="op">:</span><span class="fl">2100</span>,</span>
 <span>                co2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="fl">2020</span>, <span class="fl">2100</span><span class="op">)</span>, CO2_ppm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">369</span>, <span class="fl">412</span>, <span class="fl">600</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                outdir <span class="op">=</span> <span class="va">inputdir</span><span class="op">)</span></span>
-<span><span class="co">#&gt; file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_co2.txt saved</span></span>
+<span><span class="co">#&gt; file /tmp/RtmpzSpE6k/Collelongo/Collelongo_co2.txt saved</span></span>
 <span><span class="va">co2</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span>, <span class="fl">101</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt;     year CO2_ppm</span></span>
 <span><span class="co">#&gt; 1   2000     369</span></span>
@@ -234,9 +234,9 @@ the years:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/make_soil.html">make_soil</a></span><span class="op">(</span><span class="st">"Collelongo"</span>, lat <span class="op">=</span> <span class="fl">41.85</span>, lon <span class="op">=</span> <span class="fl">13.59</span>, clay <span class="op">=</span> <span class="fl">25</span>, silt <span class="op">=</span> <span class="fl">35</span>, sand <span class="op">=</span> <span class="fl">40</span>,</span>
 <span>          soil_depth <span class="op">=</span> <span class="fl">100</span>, outdir <span class="op">=</span> <span class="va">inputdir</span><span class="op">)</span></span>
-<span><span class="co">#&gt; file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_soil.txt saved</span></span>
+<span><span class="co">#&gt; file /tmp/RtmpzSpE6k/Collelongo/Collelongo_soil.txt saved</span></span>
 <span><span class="fu"><a href="../reference/make_topo.html">make_topo</a></span><span class="op">(</span><span class="st">"Collelongo"</span>, elev <span class="op">=</span> <span class="fl">1560</span>, outdir <span class="op">=</span> <span class="va">inputdir</span><span class="op">)</span></span>
-<span><span class="co">#&gt; file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_topo.txt saved</span></span></code></pre></div>
+<span><span class="co">#&gt; file /tmp/RtmpzSpE6k/Collelongo/Collelongo_topo.txt saved</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_soil_3DFEM.html">plot_soil_3DFEM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">inputdir</span>, <span class="st">"Collelongo_soil.txt"</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">21</span>, bg.symbols <span class="op">=</span> <span class="st">"red"</span>, cex <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="input-files_files/figure-html/plot-soil-1.png" class="r-plt" alt="" width="672"></p>
@@ -255,7 +255,7 @@ intensity, % of basal area), harvesting and regeneration.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/make_management.html">make_management</a></span><span class="op">(</span><span class="st">"Collelongo"</span>, thinning <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>, <span class="fl">2030</span><span class="op">)</span>, thinning_int <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">20</span><span class="op">)</span>,</span>
 <span>                harvesting <span class="op">=</span> <span class="fl">2060</span>, outdir <span class="op">=</span> <span class="va">inputdir</span><span class="op">)</span></span>
-<span><span class="co">#&gt; file /tmp/Rtmp6RTMCO/Collelongo/Collelongo_management.txt saved</span></span>
+<span><span class="co">#&gt; file /tmp/RtmpzSpE6k/Collelongo/Collelongo_management.txt saved</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">inputdir</span>, <span class="st">"Collelongo_management.txt"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Thinning,2010,2030" "Thinning_int,25,20" "Harvesting,2060"</span></span></code></pre></div>
 <p>With <code>man = "on"</code> the model manages the stand with the

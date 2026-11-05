@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">R3DFEM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,13 @@
       <small>Source: <a href="https://github.com/VangiElia/R3DFEM/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.1" id="r3dfem-021">R3DFEM 0.2.1<a class="anchor" aria-label="anchor" href="#r3dfem-021"></a></h2>
+<ul><li>plotrix is now a mandatory dependency (Imports): <code><a href="../reference/plot_soil_3DFEM.html">plot_soil_3DFEM()</a></code> no longer fails after a default installation.</li>
+<li>
+<code><a href="../reference/install_model.html">install_model()</a></code> without <code>source</code> stops with a clear error on Linux and macOS, instead of installing the Windows executable.</li>
+<li>README: the default installation no longer builds the vignettes, which need knitr and rmarkdown (<code>install_github()</code> does not install them); the vignettes are linked online.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="r3dfem-020">R3DFEM 0.2.0<a class="anchor" aria-label="anchor" href="#r3dfem-020"></a></h2>
 <p>The package now runs only the version 5.7 of the 3D-CMCC-FEM.</p>
